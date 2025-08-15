@@ -1,0 +1,59 @@
+:root {
+  --primary-gradient: linear-gradient(
+    45deg,
+    #405de6,
+    #5851db,
+    #833ab4,
+    #c13584,
+    #e1306c,
+    #fd1d1d,
+    #f56040,
+    #ffdc80
+  );
+  --primary-color: #405de6;
+  --secondary-color: #e1306c;
+  --accent-color: #ffdc80;
+  --success-color: #00d4aa;
+  --warning-color: #ff8a00;
+  --error-color: #ff3040;
+  --text-primary: #262626;
+  --text-secondary: #8e8e8e;
+  --background: #fafafa;
+  --white: #ffffff;
+  --border: #dbdbdb;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --shadow-hover: 0 4px 20px rgba(0, 0, 0, 0.15);
+  --border-radius: 12px;
+  --font-family: "Inter", -apple-system, BlinkMacMacFont, "Segoe UI", Roboto,
+    sans-serif;
+
+  /* NEW: Define RGB values for rgba usage */
+  --primary-rgb: 64, 93, 230; /* RGB for #405de6 */
+  --secondary-rgb: 225, 48, 108; /* RGB for #e1306c */
+  --error-rgb: 255, 48, 64; /* RGB for #ff3040 */
+  --border-rgb: 219, 219, 219; /* RGB for #dbdbdb */
+
+  /* Additional variables for clarity and consistency across styles */
+  --card-background: var(--white);
+  --input-background: var(--white);
+  --background-color: var(
+    --white
+  ); /* Often used for sections on a lighter background */
+  --shadow-elevation-low: 0 1px 3px rgba(0, 0, 0, 0.08); /* More subtle shadow */
+  --shadow-elevation-medium: 0 4px 8px rgba(0, 0, 0, 0.12); /* Default card shadow */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--background);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

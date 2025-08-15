@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Calendar - Instagram Caption Generator</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-content">
+        <a href="dashboard.html" class="logo">MoodGram</a>
+        <nav class="nav-links">
+          <a href="dashboard.html">Dashboard</a>
+          <a href="calendar.html">Calendar</a>
+          <button onclick="logout()" class="btn btn-logout">Logout</button>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="dashboard">
+        <h1>Content Calendar</h1>
+        <p style="color: var(--text-secondary); margin-bottom: 30px">
+          Schedule your Instagram posts and plan your content strategy
+        </p>
+
+        <div class="calendar-container">
+          <div class="calendar-header">
+            <h2 id="currentMonth">January 2024</h2>
+            <div class="calendar-nav">
+              <button onclick="previousMonth()">&larr; Previous</button>
+              <button onclick="nextMonth()">Next &rarr;</button>
+              <button onclick="goToToday()" class="btn btn-secondary">
+                Today
+              </button>
+            </div>
+          </div>
+
+          <div class="calendar-grid" id="calendarGrid"></div>
+        </div>
+
+        <div class="dashboard-grid" style="margin-top: 30px">
+          <div class="card" id="aiSchedulingAssistant">
+            <h2>AI Posting Time Suggestions</h2>
+            <div id="aiSuggestAlert"></div>
+            <form id="aiSuggestionForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="aiPersona">Persona</label>
+                  <select id="aiPersona" name="aiPersona" required>
+                    <option value="">Select persona</option>
+                    <option value="influencer">Influencer</option>
+                    <option value="brand">Brand</option>
+                    <option value="personal">Personal</option>
+                    <option value="artist">Artist</option>
+                    <option value="entrepreneur">Entrepreneur</option>
+                    <option value="lifestyle">Lifestyle</option>
+                    <option value="fitness">Fitness</option>
+                    <option value="foodie">Foodie</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="aiTopic">Topic/Content Type</label>
+                  <input
+                    type="text"
+                    id="aiTopic"
+                    name="aiTopic"
+                    placeholder="e.g., travel, healthy food, product launch"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="audienceType">Target Audience</label>
+                  <select id="audienceType" name="audienceType" required>
+                    <option value="">Select audience</option>
+                    <option value="Gen Z">Gen Z</option>
+                    <option value="Millennials">Millennials</option>
+                    <option value="Working Professionals">
+                      Working Professionals
+                    </option>
+                    <option value="Parents">Parents</option>
+                    <option value="Small Business Owners">
+                      Small Business Owners
+                    </option>
+                    <option value="Students">Students</option>
+                    <option value="General Public">General Public</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="aiDayOfWeek">Day of Week (Optional)</label>
+                  <select id="aiDayOfWeek" name="aiDayOfWeek">
+                    <option value="">Any Day</option>
+                    <option value="Monday">Monday</option>
+                    <option value="Tuesday">Tuesday</option>
+                    <option value="Wednesday">Wednesday</option>
+                    <option value="Thursday">Thursday</option>
+                    <option value="Friday">Friday</option>
+                    <option value="Saturday">Saturday</option>
+                    <option value="Sunday">Sunday</option>
+                    <option value="Weekday">Weekday</option>
+                    <option value="Weekend">Weekend</option>
+                  </select>
+                </div>
+              </div>
+              <button
+                type="submit"
+                class="btn btn-primary"
+                id="getSuggestionsBtn"
+              >
+                <span class="btn-text">Get AI Suggestions</span>
+                <div class="loading hidden">
+                  <div class="spinner"></div>
+                  Getting Suggestions...
+                </div>
+              </button>
+            </form>
+            <div id="suggestedTimesContainer" class="suggested-times-container">
+              <p
+                style="
+                  color: var(--text-secondary);
+                  text-align: center;
+                  margin-top: 20px;
+                "
+              >
+                Enter details above and click 'Get AI Suggestions'
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Schedule New Post</h2>
+            <div id="scheduleAlert"></div>
+
+            <form id="scheduleForm">
+              <div class="form-group">
+                <label for="scheduleDate">Date</label>
+                <input
+                  type="date"
+                  id="scheduleDate"
+                  name="scheduleDate"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="scheduleTime">Time</label>
+                <input
+                  type="time"
+                  id="scheduleTime"
+                  name="scheduleTime"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="savedPost">Select Saved Post</label>
+                <select id="savedPost" name="savedPost" required>
+                  <option value="">Choose a saved post</option>
+                </select>
+              </div>
+
+              <button type="submit" class="btn btn-primary">
+                Schedule Post
+              </button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h2>Upcoming Posts</h2>
+            <div id="upcomingPosts">
+              <p style="color: var(--text-secondary); text-align: center">
+                No scheduled posts
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="postModal"
+      class="modal hidden"
+      style="
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+      "
+    >
+      <div
+        class="modal-content"
+        style="
+          background: var(--white);
+          padding: 30px;
+          border-radius: var(--border-radius);
+          max-width: 500px;
+          width: 90%;
+          max-height: 80vh;
+          overflow-y: auto;
+        "
+      >
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+          "
+        >
+          <h2>Scheduled Post Details</h2>
+          <button
+            onclick="closeModal()"
+            style="
+              background: none;
+              border: none;
+              font-size: 24px;
+              cursor: pointer;
+            "
+          >
+            &times;
+          </button>
+        </div>
+        <div id="modalContent"></div>
+        <div style="margin-top: 20px; display: flex; gap: 10px">
+          <button onclick="unschedulePost()" class="btn btn-secondary">
+            Unschedule
+          </button>
+          <button onclick="closeModal()" class="btn btn-primary">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentDate = new Date();
+      let selectedPostId = null;
+      let scheduledPosts = [];
+      let savedPosts = [];
+
+      const aiSuggestionForm = document.getElementById("aiSuggestionForm");
+      const getSuggestionsBtn = document.getElementById("getSuggestionsBtn");
+      const suggestedTimesContainer = document.getElementById(
+        "suggestedTimesContainer"
+      );
+      const aiSuggestAlert = document.getElementById("aiSuggestAlert");
+      const scheduleTimeInput = document.getElementById("scheduleTime");
+
+      window.addEventListener("load", async () => {
+        console.log("Calendar: Checking authentication on load...");
+        try {
+          const response = await fetch("/api/auth/check", {
+            credentials: "include",
+          });
+          console.log("Calendar: Auth check response status:", response.status);
+
+          if (!response.ok) {
+            console.log("Calendar: Auth check failed, redirecting to login.");
+            window.location.href = "login.html";
+            return;
+          }
+
+          console.log("Calendar: Auth check successful. Loading data...");
+          await loadSavedPosts();
+          await loadScheduledPosts();
+          generateCalendar();
+          console.log("Calendar: Page initial data loaded.");
+        } catch (error) {
+          console.error("Calendar: Auth check failed due to error:", error);
+          showAlert(
+            "Authentication failed or network error. Please log in again.",
+            "error"
+          );
+          setTimeout(() => {
+            window.location.href = "login.html";
+          }, 2000);
+        }
+      });
+
+      function generateCalendar() {
+        console.log("Calendar: generateCalendar called.");
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+
+        const monthNames = [
+          "January",
+          "February",
+          "March",
+          "April",
+          "May",
+          "June",
+          "July",
+          "August",
+          "September",
+          "October",
+          "November",
+          "December",
+        ];
+        document.getElementById(
+          "currentMonth"
+        ).textContent = `${monthNames[month]} ${year}`;
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const startDate = new Date(firstDay);
+        startDate.setDate(startDate.getDate() - firstDay.getDay());
+
+        const calendarGrid = document.getElementById("calendarGrid");
+        calendarGrid.innerHTML = "";
+
+        const dayHeaders = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+        dayHeaders.forEach((day) => {
+          const header = document.createElement("div");
+          header.className = "calendar-day-header";
+          header.textContent = day;
+          calendarGrid.appendChild(header);
+        });
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const currentMonth = month;
+
+        for (let i = 0; i < 42; i++) {
+          const date = new Date(startDate);
+          date.setDate(startDate.getDate() + i);
+          date.setHours(0, 0, 0, 0);
+
+          const dayElement = document.createElement("div");
+          dayElement.className = "calendar-day";
+
+          if (date.getTime() === today.getTime()) {
+            dayElement.classList.add("today");
+          }
+
+          if (date.getMonth() !== currentMonth) {
+            dayElement.classList.add("other-month");
+          }
+
+          const dayNumber = document.createElement("div");
+          dayNumber.className = "calendar-day-number";
+          dayNumber.textContent = date.getDate();
+          dayElement.appendChild(dayNumber);
+
+          const postsForDay = scheduledPosts.filter((post) => {
+            const postDate = new Date(post.scheduled_date);
+            return (
+              postDate.getFullYear() === date.getFullYear() &&
+              postDate.getMonth() === date.getMonth() &&
+              postDate.getDate() === date.getDate()
+            );
+          });
+
+          postsForDay.forEach((post) => {
+            const postElement = document.createElement("div");
+            postElement.className = "scheduled-post-event";
+            const scheduledTime = new Date(
+              post.scheduled_date
+            ).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+            postElement.textContent = `${post.topic} (${scheduledTime})`;
+            postElement.onclick = (event) => {
+              event.stopPropagation();
+              showPostDetails(post);
+            };
+            dayElement.appendChild(postElement);
+          });
+
+          if (
+            date.getMonth() === currentMonth &&
+            date.getTime() >= today.getTime()
+          ) {
+            dayElement.classList.add("clickable-day");
+            dayElement.onclick = () =>
+              selectDateForScheduling(date.toISOString().split("T")[0]);
+          }
+
+          calendarGrid.appendChild(dayElement);
+        }
+        console.log("Calendar: Calendar grid generated.");
+      }
+
+      function selectDateForScheduling(dateString) {
+        console.log(
+          "Calendar: selectDateForScheduling called with:",
+          dateString
+        );
+        document.getElementById("scheduleDate").value = dateString;
+      }
+
+      function previousMonth() {
+        console.log("Calendar: Previous month clicked.");
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        generateCalendar();
+      }
+
+      function nextMonth() {
+        console.log("Calendar: Next month clicked.");
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        generateCalendar();
+      }
+
+      function goToToday() {
+        console.log("Calendar: Go to Today clicked.");
+        currentDate = new Date();
+        generateCalendar();
+      }
+
+      async function loadSavedPosts() {
+        console.log("Calendar: Loading saved posts for dropdown...");
+        try {
+          const response = await fetch("/api/generate/saved", {
+            credentials: "include",
+          });
+          if (!response.ok) {
+            console.error(
+              "Calendar: Failed to fetch saved posts, status:",
+              response.status
+            );
+            const errorData = await response
+              .json()
+              .catch(() => ({ error: "Unknown error" }));
+            throw new Error(
+              errorData.error || `Failed with status: ${response.status}`
+            );
+          }
+          savedPosts = await response.json();
+          console.log(
+            "Calendar: Successfully loaded saved posts:",
+            savedPosts.length,
+            savedPosts
+          );
+
+          const select = document.getElementById("savedPost");
+          select.innerHTML = '<option value="">Choose a saved post</option>';
+
+          savedPosts.forEach((post) => {
+            const option = document.createElement("option");
+            option.value = post.id;
+            option.textContent = `${post.topic} (${post.caption.substring(
+              0,
+              30
+            )}...)`;
+            select.appendChild(option);
+          });
+          console.log("Calendar: Saved posts dropdown populated.");
+        } catch (error) {
+          console.error(
+            "Calendar: Error loading saved posts for dropdown:",
+            error
+          );
+          showScheduleAlert(
+            "Failed to load your saved posts for scheduling.",
+            "error"
+          );
+        }
+      }
+
+      async function loadScheduledPosts() {
+        console.log("Calendar: Loading scheduled posts...");
+        try {
+          const response = await fetch("/api/calendar/scheduled", {
+            credentials: "include",
+          });
+          if (!response.ok) {
+            console.error(
+              "Calendar: Failed to fetch scheduled posts, status:",
+              response.status
+            );
+            const errorData = await response
+              .json()
+              .catch(() => ({ error: "Unknown error" }));
+            throw new Error(
+              errorData.error || `Failed with status: ${response.status}`
+            );
+          }
+          scheduledPosts = await response.json();
+          console.log(
+            "Calendar: Successfully loaded scheduled posts:",
+            scheduledPosts.length,
+            scheduledPosts
+          );
+
+          updateUpcomingPosts();
+          generateCalendar();
+          console.log("Calendar: Scheduled posts updated in UI.");
+        } catch (error) {
+          console.error("Calendar: Error loading scheduled posts:", error);
+          showScheduleAlert("Failed to load your scheduled posts.", "error");
+        }
+      }
+
+      function updateUpcomingPosts() {
+        console.log("Calendar: updateUpcomingPosts called.");
+        const container = document.getElementById("upcomingPosts");
+        const upcoming = scheduledPosts
+          .filter((post) => new Date(post.scheduled_date) >= new Date())
+          .sort(
+            (a, b) => new Date(a.scheduled_date) - new Date(b.scheduled_date)
+          )
+          .slice(0, 5);
+
+        if (upcoming.length === 0) {
+          container.innerHTML =
+            '<p style="color: var(--text-secondary); text-align: center;">No scheduled posts</p>';
+          console.log("Calendar: No upcoming posts.");
+          return;
+        }
+
+        container.innerHTML = upcoming
+          .map((post) => {
+            const postDateTime = new Date(post.scheduled_date);
+            const formattedDate = postDateTime.toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+            });
+            const formattedTime = postDateTime.toLocaleTimeString("en-US", {
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+            return `
+                    <div style="padding: 15px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; cursor: pointer;" onclick="showPostDetails(${JSON.stringify(
+                      post
+                    ).replace(/"/g, "&quot;")})">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                            <strong>${post.topic}</strong>
+                            <span style="color: var(--text-secondary); font-size: 14px;">${formattedDate} at ${formattedTime}</span>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 14px; margin: 0;">${post.caption.substring(
+                          0,
+                          100
+                        )}...</p>
+                    </div>
+                `;
+          })
+          .join("");
+        console.log("Calendar: Upcoming posts populated.");
+      }
+
+      document
+        .getElementById("scheduleForm")
+        .addEventListener("submit", async function (e) {
+          console.log("Calendar: scheduleForm submit event triggered.");
+          e.preventDefault();
+
+          const formData = new FormData(e.target);
+          const selectedDate = formData.get("scheduleDate");
+          const selectedTime = formData.get("scheduleTime"); // FIX: Corrected variable name from scheduleDate to scheduleTime
+          const scheduledDateTime = `${selectedDate}T${selectedTime}:00.000Z`;
+
+          const data = {
+            postId: parseInt(formData.get("savedPost")),
+            scheduledDate: scheduledDateTime,
+          };
+          console.log("Calendar: Scheduling data prepared:", data);
+
+          try {
+            console.log("Calendar: Fetching /api/calendar/schedule...");
+            const response = await fetch("/api/calendar/schedule", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(data),
+              credentials: "include",
+            });
+            console.log("Calendar: Schedule response status:", response.status);
+
+            if (response.ok) {
+              showScheduleAlert("Post scheduled successfully!", "success");
+              console.log("Calendar: Schedule successful.");
+              e.target.reset();
+              scheduleTimeInput.value = "";
+              await loadScheduledPosts();
+            } else {
+              const error = await response.json();
+              console.error(
+                "Calendar: Schedule backend error response:",
+                error
+              );
+              showScheduleAlert(
+                error.error || "Failed to schedule post.",
+                "error"
+              );
+            }
+          } catch (error) {
+            console.error(
+              "Calendar: Schedule connection or network error:",
+              error
+            );
+            showScheduleAlert("Connection error. Please try again.", "error");
+          }
+        });
+
+      aiSuggestionForm.addEventListener("submit", async function (e) {
+        console.log("Calendar: aiSuggestionForm submit event triggered.");
+        e.preventDefault();
+
+        const button = getSuggestionsBtn;
+        const btnText = button.querySelector(".btn-text");
+        const loading = button.querySelector(".loading");
+
+        btnText.classList.add("hidden");
+        loading.classList.remove("hidden");
+        button.disabled = true;
+        console.log("Calendar: AI Suggestion loading state activated.");
+
+        const formData = new FormData(e.target);
+        const data = {
+          persona: formData.get("aiPersona"),
+          topic: formData.get("aiTopic"),
+          audienceType: formData.get("audienceType"),
+          currentDayOfWeek: formData.get("aiDayOfWeek") || "",
+        };
+        console.log("Calendar: AI Suggestion data prepared:", data);
+
+        if (!data.persona || !data.topic || !data.audienceType) {
+          showScheduleAlert(
+            "Please fill in all required fields for AI suggestions.",
+            "error",
+            aiSuggestAlert
+          );
+          btnText.classList.remove("hidden");
+          loading.classList.add("hidden");
+          button.disabled = false;
+          console.warn("Calendar: AI Suggestion validation failed.");
+          return;
+        }
+
+        try {
+          showScheduleAlert(
+            "Getting AI suggestions...",
+            "info",
+            aiSuggestAlert
+          );
+          const queryParams = new URLSearchParams(data).toString();
+          console.log(
+            "Calendar: Fetching /api/calendar/suggest-time with query:",
+            queryParams
+          );
+          const response = await fetch(
+            `/api/calendar/suggest-time?${queryParams}`,
+            { credentials: "include" }
+          );
+          console.log(
+            "Calendar: AI Suggestion response status:",
+            response.status
+          );
+
+          const result = await response.json();
+          console.log("Calendar: AI Suggestion response body:", result);
+
+          if (response.ok) {
+            displaySuggestedTimes(result.suggestedTimes);
+            showScheduleAlert("Suggestions loaded!", "success", aiSuggestAlert);
+            console.log("Calendar: AI Suggestions loaded and displayed.");
+          } else {
+            console.error(
+              "Calendar: AI Suggestion backend error response:",
+              result.error
+            );
+            showScheduleAlert(
+              result.error || "Failed to get AI suggestions. Please try again.",
+              "error",
+              aiSuggestAlert
+            );
+          }
+        } catch (error) {
+          console.error(
+            "Calendar: AI Suggestion connection or network error:",
+            error
+          );
+          showScheduleAlert(
+            "Connection error. Could not get AI suggestions.",
+            "error",
+            aiSuggestAlert
+          );
+        } finally {
+          btnText.classList.remove("hidden");
+          loading.classList.add("hidden");
+          button.disabled = false;
+          console.log("Calendar: AI Suggestion loading state deactivated.");
+        }
+      });
+
+      function displaySuggestedTimes(times) {
+        console.log("Calendar: displaySuggestedTimes called with:", times);
+        suggestedTimesContainer.innerHTML = "";
+        if (times && times.length > 0) {
+          const title = document.createElement("p");
+          title.style.marginTop = "15px";
+          title.style.marginBottom = "10px";
+          title.style.fontWeight = "600";
+          title.textContent = "Suggested Times:";
+          suggestedTimesContainer.appendChild(title);
+
+          const timesWrapper = document.createElement("div");
+          timesWrapper.style.display = "flex";
+          timesWrapper.style.gap = "10px";
+          timesWrapper.style.flexWrap = "wrap";
+
+          times.forEach((time) => {
+            const timeBtn = document.createElement("button");
+            timeBtn.className = "btn btn-secondary suggested-time-btn";
+            timeBtn.textContent = time;
+            timeBtn.onclick = () => prefillScheduleTime(time);
+            timesWrapper.appendChild(timeBtn);
+          });
+          suggestedTimesContainer.appendChild(timesWrapper);
+          console.log("Calendar: Suggested times buttons created.");
+        } else {
+          suggestedTimesContainer.innerHTML = `
+                    <p style="color: var(--text-secondary); text-align: center; margin-top: 20px;">
+                        No suggestions found. Try different parameters.
+                    </p>`;
+          console.log("Calendar: No suggested times to display.");
+        }
+      }
+
+      function prefillScheduleTime(time) {
+        console.log("Calendar: prefillScheduleTime called with:", time);
+        scheduleTimeInput.value = time;
+        showScheduleAlert(
+          `Time ${time} pre-filled! Now select a date and post.`,
+          "info"
+        );
+        document
+          .getElementById("scheduleForm")
+          .scrollIntoView({ behavior: "smooth" });
+      }
+
+      function showPostDetails(post) {
+        console.log("Calendar: showPostDetails called for post:", post.id);
+        selectedPostId = post.id;
+        const modalContent = document.getElementById("modalContent");
+
+        const scheduledDateTime = new Date(post.scheduled_date);
+        const formattedDate = scheduledDateTime.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+        const formattedTime = scheduledDateTime.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+
+        modalContent.innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <h3>${post.topic}</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 15px;">
+                        Scheduled for: ${formattedDate} at ${formattedTime}
+                    </p>
+                    <p style="margin-bottom: 10px;"><strong>Mood:</strong> ${
+                      post.mood
+                    }</p>
+                    <p style="margin-bottom: 15px;"><strong>Persona:</strong> ${
+                      post.persona
+                    }</p>
+                    ${
+                      post.trendingTopic
+                        ? `<p><strong>Trending Topic:</strong> ${post.trendingTopic}</p>`
+                        : ""
+                    }
+                </div>
+                
+                <div style="background: var(--background); padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h4>Caption:</h4>
+                    <p>${post.caption}</p>
+                </div>
+                
+                <div style="background: var(--background); padding: 15px; border-radius: 8px;">
+                    <h4>Hashtags:</h4>
+                    <div>${post.hashtags
+                      .map((tag) => `<span class="hashtag">#${tag}</span>`)
+                      .join("")}</div>
+                </div>
+            `;
+
+        document.getElementById("postModal").classList.remove("hidden");
+        console.log("Calendar: Post modal shown.");
+      }
+
+      function closeModal() {
+        console.log("Calendar: closeModal called.");
+        document.getElementById("postModal").classList.add("hidden");
+        selectedPostId = null;
+      }
+
+      async function unschedulePost() {
+        console.log("Calendar: unschedulePost called for ID:", selectedPostId);
+        if (!selectedPostId) return;
+
+        try {
+          const response = await fetch(
+            `/api/calendar/scheduled/${selectedPostId}`,
+            {
+              method: "DELETE",
+              credentials: "include",
+            }
+          );
+
+          if (response.ok) {
+            closeModal();
+            await loadScheduledPosts();
+            showAlert("Post unscheduled successfully!", "success");
+            console.log("Calendar: Post unscheduled successfully.");
+          } else {
+            const error = await response.json();
+            console.error(
+              "Calendar: Unschedule backend error response:",
+              error
+            );
+            showAlert(error.error || "Failed to unschedule post.", "error");
+          }
+        } catch (error) {
+          console.error(
+            "Calendar: Unschedule connection or network error:",
+            error
+          );
+          showAlert("Connection error. Please try again.", "error");
+        }
+      }
+
+      function showScheduleAlert(
+        message,
+        type,
+        containerElement = document.getElementById("scheduleAlert")
+      ) {
+        console.log(`Calendar: Displaying schedule alert ${type} - ${message}`);
+        containerElement.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+        setTimeout(() => {
+          containerElement.innerHTML = "";
+        }, 5000);
+      }
+
+      document
+        .getElementById("postModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) {
+            console.log("Calendar: Click outside modal detected, closing.");
+            closeModal();
+          }
+        });
+    </script>
+  </body>
+</html>

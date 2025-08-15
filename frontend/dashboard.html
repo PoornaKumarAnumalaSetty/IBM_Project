@@ -1,0 +1,2870 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - MoodGram</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="css/base.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+    <link rel="stylesheet" href="css/header.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/utilities.css" />
+    <link rel="stylesheet" href="css/dashboard.css" />
+    <link rel="stylesheet" href="css/collaboration.css" />
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/emoji-picker-element@1/index.js"
+    ></script>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-content">
+        <a href="dashboard.html" class="logo">MoodGram</a>
+        <nav class="nav-links">
+          <a href="dashboard.html">Dashboard</a>
+          <a href="calendar.html">Calendar</a>
+          <button onclick="logout()" class="btn btn-logout">Logout</button>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="dashboard">
+        <div class="welcome-section">
+          <h1 id="welcomeMessage">Welcome back!</h1>
+          <p>
+            Generate amazing Instagram captions and hashtags with AI assistance
+          </p>
+        </div>
+
+        <!-- NEW FEATURE: Brand Voice & Target Audience Preferences -->
+        <div class="card user-preferences-section">
+            <h2>Your Brand Preferences</h2>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 20px;">
+                Set your default brand voice and target audience for more tailored AI generations.
+            </p>
+            <div id="preferences-alert-container"></div>
+            <form id="brandPreferencesForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="brandVoiceInput">Brand Voice</label>
+                        <select id="brandVoiceInput" name="brandVoice">
+                            <option value="">Select a voice (Optional)</option>
+                            <option value="professional">Professional</option>
+                            <option value="casual">Casual</option>
+                            <option value="witty">Witty</option>
+                            <option value="inspiring">Inspiring</option>
+                            <option value="luxurious">Luxurious</option>
+                            <option value="playful">Playful</option>
+                            <option value="educational">Educational</option>
+                            <option value="friendly">Friendly</option>
+                            <option value="bold">Bold</option>
+                            <option value="minimalist">Minimalist</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="targetAudienceInput">Target Audience</label>
+                        <input
+                            type="text"
+                            id="targetAudienceInput"
+                            name="targetAudience"
+                            placeholder="e.g., Gen Z, fitness enthusiasts, small business owners"
+                        />
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <span class="btn-text">Save Preferences</span>
+                    <div class="loading hidden">
+                        <div class="spinner"></div>
+                        Saving...
+                    </div>
+                </button>
+            </form>
+        </div>
+        <!-- END NEW FEATURE -->
+
+        <div class="generator-form">
+          <h2>Generate Content</h2>
+          <div id="alert-container"></div>
+
+          <div class="generator-tabs">
+            <button class="tab-button active" data-tab="textGenerateForm">
+              Text Input
+            </button>
+            <button class="tab-button" data-tab="imageGenerateForm">
+              Image Input
+            </button>
+            <button class="tab-button" data-tab="captionRewriterForm">
+              Caption Rewriter
+            </button>
+            <button class="tab-button" data-tab="emojiSuggestionForm">
+              Emoji & Hastag Suggestions
+            </button>
+            <button class="tab-button" data-tab="collaborationTabContent">
+              Collaboration
+            </button>
+          </div>
+
+          <form id="textGenerateForm" class="tab-content active">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="topic">Topic</label>
+                <input
+                  type="text"
+                  id="topic"
+                  name="topic"
+                  placeholder="e.g., coffee date, workout, travel"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="mood">Mood</label>
+                <select id="mood" name="mood" required>
+                  <option value="">Select mood</option>
+                  <option value="happy">Happy</option>
+                  <option value="sad">Sad</option>
+                  <option value="angry">Angry</option>
+                  <option value="surprised">Surprised</option>
+                  <option value="romantic">Romantic</option>
+                  <option value="inspiring">Inspiring</option>
+                  <option value="funny">Funny</option>
+                  <option value="professional">Professional</option>
+                  <option value="calm">Calm</option>
+                  <option value="creative">Creative</option>
+                  <option value="energetic">Energetic</option>
+                  <option value="casual">Casual</option>
+                  <option value="motivational">Motivational</option>
+                  <option value="nostalgic">Nostalgic</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="persona">Persona</label>
+                <select id="persona" name="persona" required>
+                  <option value="">Select persona</option>
+                  <option value="influencer">Influencer</option>
+                  <option value="business">Business</business>
+                  <option value="poet">Poet</option>
+                  <option value="journalist">Journalist</option>
+                  <option value="brand">Brand</brand>
+                  <option value="meme god">Meme God</option>
+                  <option value="gym coach">Gym Coach</option>
+                  <option value="personal">Personal</personal>
+                  <option value="artist">Artist</artist>
+                  <option value="entrepreneur">Entrepreneur</entrepreneur>
+                  <option value="lifestyle">Lifestyle</lifestyle>
+                  <option value="fitness">Fitness</fitness>
+                  <option value="foodie">Foodie</foodie>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="trendingTopic">Trending Topic (Optional)</label>
+                <select id="trendingTopic" name="trendingTopic">
+                  <option value="">Select trending topic</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="language">Language</label>
+              <select id="language" name="language" required>
+                <option value="English">English</option>
+                <option value="Spanish">Spanish</Spanish>
+                <option value="French">French</French>
+                <option value="German">German</German>
+                <option value="Italian">Italian</Italian>
+                <option value="Portuguese">Portuguese</Portuguese>
+                <option value="Japanese">Japanese</Japanese>
+                <option value="Chinese (Simplified)">
+                  Chinese (Simplified)
+                </option>
+                <option value="Korean">Korean</Korean>
+                <option value="Arabic">Arabic</Arabic>
+                <option value="Hindi">Hindi</Hindi>
+                <option value="Russian">Russian</Russian>
+                <option value="Dutch">Dutch</Dutch>
+                <option value="Swedish">Swedish</Swedish>
+                <option value="Norwegian">Norwegian</Norwegian>
+                <option value="Danish">Danish</Danish>
+                <option value="Finnish">Finnish</Finnish>
+                <option value="Greek">Greek</Greek>
+                <option value="Turkish">Turkish</Turkish>
+                <option value="Polish">Polish</Polish>
+                <option value="Vietnamese">Vietnamese</Vietnamese>
+                <option value="Thai">Thai</Thai>
+                <option value="Indonesian">Indonesian</Indonesian>
+                <option value="Malay">Malay</Malay>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="generatedCaptionDisplay"
+                >Generated Caption Preview</label
+              >
+              <textarea
+                id="generatedCaptionDisplay"
+                name="generatedCaptionDisplay"
+                placeholder="Your generated caption will appear here after clicking 'Generate Content'..."
+                rows="4"
+                readonly
+                style="pointer-events: none; opacity: 0.7"
+              ></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              <span class="btn-text">Generate Content</span>
+              <div class="loading hidden">
+                <div class="spinner"></div>
+                Generating...
+              </div>
+            </button>
+          </form>
+
+          <form id="imageGenerateForm" class="tab-content hidden">
+            <div class="form-group">
+              <label for="imageUpload">Upload Image</label>
+              <input type="file" id="imageUpload" accept="image/*" required />
+              <div id="imagePreview" class="image-preview hidden">
+                <img id="previewImage" src="" alt="Image Preview" />
+                <button
+                  type="button"
+                  id="removeImageBtn"
+                  class="remove-image-btn"
+                >
+                  X
+                </button>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="imageTrendingTopic">Trending Topic (Optional)</label>
+              <select id="imageTrendingTopic" name="imageTrendingTopic">
+                <option value="">Select trending topic</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="imageLanguage">Language</label>
+              <select id="imageLanguage" name="imageLanguage" required>
+                <option value="English">English</option>
+                <option value="Spanish">Spanish</Spanish>
+                <option value="French">French</French>
+                <option value="German">German</German>
+                <option value="Italian">Italian</Italian>
+                <option value="Portuguese">Portuguese</Portuguese>
+                <option value="Japanese">Japanese</Japanese>
+                <option value="Chinese (Simplified)">
+                  Chinese (Simplified)
+                </option>
+                <option value="Korean">Korean</Korean>
+                <option value="Arabic">Arabic</Arabic>
+                <option value="Hindi">Hindi</Hindi>
+                <option value="Russian">Russian</Russian>
+                <option value="Dutch">Dutch</Dutch>
+                <option value="Swedish">Swedish</Swedish>
+                <option value="Norwegian">Norwegian</Norwegian>
+                <option value="Danish">Danish</Danish>
+                <option value="Finnish">Finnish</Finnish>
+                <option value="Greek">Greek</Greek>
+                <option value="Turkish">Turkish</Turkish>
+                <option value="Polish">Polish</Polish>
+                <option value="Vietnamese">Vietnamese</Vietnamese>
+                <option value="Thai">Thai</Thai>
+                <option value="Indonesian">Indonesian</Indonesian>
+                <option value="Malay">Malay</Malay>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              <span class="btn-text">Generate from Image</span>
+              <div class="loading hidden">
+                <div class="spinner"></div>
+                Analyzing & Generating...
+              </div>
+            </button>
+          </form>
+
+          <form
+            id="captionRewriterForm"
+            class="tab-content hidden caption-rewriter-form"
+          >
+            <h2>Rewrite Existing Caption</h2>
+            <div class="form-group">
+              <label for="originalCaption">Original Caption</label>
+              <textarea
+                id="originalCaption"
+                name="originalCaption"
+                placeholder="Paste your existing caption here..."
+                rows="4"
+                required
+              ></textarea>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="rewriteMood">Desired Mood</label>
+                <select id="rewriteMood" name="rewriteMood" required>
+                  <option value="">Select mood</option>
+                  <option value="Enthusiastic">Enthusiastic</option>
+                  <option value="Informative">Informative</option>
+                  <option value="Funny">Funny</option>
+                  <option value="Inspirational">Inspirational</option>
+                  <option value="Professional">Professional</option>
+                  <option value="Concise">Concise</option>
+                  <option value="Evocative">Evocative</option>
+                  <option value="Call-to-Action Focused">
+                    Call-to-Action Focused
+                  </option>
+                  <option value="Neutral">Neutral</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="rewriteLength">Desired Length</label>
+                <select id="rewriteLength" name="rewriteLength" required>
+                  <option value="">Select length</option>
+                  <option value="Short & Punchy">Short & Punchy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Long & Detailed">Long & Detailed</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="rewriteLanguage">Language</label>
+              <select id="rewriteLanguage" name="rewriteLanguage" required>
+                <option value="English">English</option>
+                <option value="Spanish">Spanish</Spanish>
+                <option value="French">French</French>
+                <option value="German">German</German>
+                <option value="Italian">Italian</Italian>
+                <option value="Portuguese">Portuguese</Portuguese>
+                <option value="Japanese">Japanese</Japanese>
+                <option value="Chinese (Simplified)">
+                  Chinese (Simplified)
+                </option>
+                <option value="Korean">Korean</Korean>
+                <option value="Arabic">Arabic</Arabic>
+                <option value="Hindi">Hindi</Hindi>
+                <option value="Russian">Russian</Russian>
+                <option value="Dutch">Dutch</Dutch>
+                <option value="Swedish">Swedish</Swedish>
+                <option value="Norwegian">Norwegian</Norwegian>
+                <option value="Danish">Danish</Danish>
+                <option value="Finnish">Finnish</Finnish>
+                <option value="Greek">Greek</Greek>
+                <option value="Turkish">Turkish</Turkish>
+                <option value="Polish">Polish</Polish>
+                <option value="Vietnamese">Vietnamese</Vietnamese>
+                <option value="Thai">Thai</Thai>
+                <option value="Indonesian">Indonesian</Indonesian>
+                <option value="Malay">Malay</Malay>
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+              <span class="btn-text">Rewrite Caption</span>
+              <div class="loading hidden">
+                <div class="spinner"></div>
+                Rewriting...
+              </div>
+            </button>
+
+            <div
+              id="rewrittenSuggestionsContainer"
+              class="rewritten-suggestions hidden"
+            >
+              <h3>Suggested Captions</h3>
+              <div id="rewrittenCaptionsList"></div>
+              <div class="flex gap-3" style="margin-top: 15px">
+                <button
+                  type="button"
+                  id="saveAllRewrittenBtn"
+                  class="btn btn-primary"
+                >
+                  Save All Suggestions
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <form
+            id="emojiSuggestionForm"
+            class="tab-content hidden caption-rewriter-form"
+          >
+            <h2>AI Emoji & Hashtag Suggestions</h2>
+            <p
+              style="
+                text-align: center;
+                color: var(--text-secondary);
+                margin-bottom: 20px;
+              "
+            >
+              Get AI-powered emoji recommendations for your text, and analyze
+              your hashtags for effectiveness.
+            </p>
+
+            <div class="form-group">
+              <label for="emojiCaptionTextarea"
+                >Caption to Suggest Emojis For</label
+              >
+              <div class="emoji-input-wrapper">
+                <textarea
+                  id="emojiCaptionTextarea"
+                  name="emojiCaptionTextarea"
+                  placeholder="Paste your caption here, or it will be auto-filled from your last generation."
+                  rows="6"
+                  required
+                ></textarea>
+                <button
+                  type="button"
+                  class="emoji-picker-btn"
+                  data-target-textarea="emojiCaptionTextarea"
+                >
+                  😊
+                </button>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="emojiMood">Mood (Optional)</label>
+                <select id="emojiMood" name="emojiMood">
+                  <option value="">Any Mood</option>
+                  <option value="happy">Happy</option>
+                  <option value="romantic">Romantic</option>
+                  <option value="inspiring">Inspiring</option>
+                  <option value="funny">Funny</option>
+                  <option value="professional">Professional</option>
+                  <option value="casual">Casual</option>
+                  <option value="motivational">Motivational</option>
+                  <option value="nostalgic">Nostalgic</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="emojiTopic">Topic (Optional)</label>
+                <input
+                  type="text"
+                  id="emojiTopic"
+                  name="emojiTopic"
+                  placeholder="e.g., travel, food, fitness"
+                />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="emojiPersona">Persona (Optional)</label>
+                <select id="emojiPersona" name="emojiPersona">
+                  <option value="">Any Persona</option>
+                  <option value="influencer">Influencer</option>
+                  <option value="brand">Brand</brand>
+                  <option value="personal">Personal</personal>
+                  <option value="artist">Artist</artist>
+                  <option value="entrepreneur">Entrepreneur</entrepreneur>
+                  <option value="lifestyle">Lifestyle</lifestyle>
+                  <option value="fitness">Fitness</fitness>
+                  <option value="foodie">Foodie</foodie>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="emojiLanguage">Language</label>
+                <select id="emojiLanguage" name="emojiLanguage" required>
+                  <option value="English">English</option>
+                  <option value="Spanish">Spanish</Spanish>
+                  <option value="French">French</French>
+                  <option value="German">German</German>
+                  <option value="Italian">Italian</Italian>
+                  <option value="Portuguese">Portuguese</Portuguese>
+                  <option value="Japanese">Japanese</Japanese>
+                  <option value="Chinese (Simplified)">
+                    Chinese (Simplified)
+                  </option>
+                  <option value="Korean">Korean</Korean>
+                  <option value="Arabic">Arabic</Arabic>
+                  <option value="Hindi">Hindi</Hindi>
+                  <option value="Russian">Russian</Russian>
+                  <option value="Dutch">Dutch</Dutch>
+                  <option value="Swedish">Swedish</Swedish>
+                  <option value="Norwegian">Norwegian</Norwegian>
+                  <option value="Danish">Danish</Danish>
+                  <option value="Finnish">Finnish</Finnish>
+                  <option value="Greek">Greek</Greek>
+                  <option value="Turkish">Turkish</Turkish>
+                  <option value="Polish">Polish</Polish>
+                  <option value="Vietnamese">Vietnamese</Vietnamese>
+                  <option value="Thai">Thai</Thai>
+                  <option value="Indonesian">Indonesian</Indonesian>
+                  <option value="Malay">Malay</Malay>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" id="getEmojiSuggestionsBtn">
+              <span class="btn-text">Get Emoji Suggestions</span>
+              <div class="loading hidden">
+                <div class="spinner"></div>
+                Getting Suggestions...
+              </div>
+            </button>
+
+            <div
+              id="aiEmojiCategoriesContainer"
+              class="ai-emoji-suggestions-container"
+              style="margin-top: 25px"
+            >
+              <label>AI Suggested Categories:</label>
+              <div id="aiEmojiCategoryButtons" class="ai-emoji-categories">
+                <span class="emoji-placeholder"
+                  >Enter your caption text and click "Get Suggestions"!</span
+                >
+              </div>
+              <div class="loading-emojis hidden">
+                <div class="spinner small"></div>
+                Suggesting Categories...
+              </div>
+            </div>
+
+            <div
+              id="aiSelectedCategoryEmojisContainer"
+              class="rewritten-suggestions hidden"
+            >
+              <h3 id="selectedCategoryTitle">Selected Emojis:</h3>
+              <div id="aiSelectedEmojisList" class="ai-emoji-list"></div>
+              <div class="flex gap-3" style="margin-top: 15px">
+                <button
+                  type="button"
+                  id="copySelectedEmojisBtn"
+                  class="btn btn-secondary"
+                >
+                  Copy Emojis
+                </button>
+              </div>
+            </div>
+
+            <div id="hashtagAnalysisSection" style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border);">
+              <h2>Hashtag Analyzer</h2>
+              <p style="text-align: center; color: var(--text-secondary); margin-bottom: 20px;">
+                Paste hashtags or analyze the last generated set to check for potential issues.
+              </p>
+              <div class="form-group">
+                <label for="hashtagsToAnalyzeTextarea">Hashtags to Analyze (comma or space separated)</label>
+                <textarea
+                  id="hashtagsToAnalyzeTextarea"
+                  name="hashtagsToAnalyzeTextarea"
+                  placeholder="e.g., #travelgram #instagood #bannedhashtag"
+                  rows="3"
+                ></textarea>
+              </div>
+              <button type="button" id="analyzeHashtagsBtn" class="btn btn-primary">
+                <span class="btn-text">Analyze Hashtags</span>
+                <div id="hashtagAnalysisLoading" class="loading hidden">
+                  <div class="spinner"></div>
+                  Analyzing...
+                </div>
+              </button>
+              <div id="hashtagAnalysisResults" class="analysis-results-container" style="margin-top: 25px;">
+                <p class="placeholder" style="text-align: center; color: var(--text-secondary);">
+                  Enter hashtags and click "Analyze Hashtags" to see results.
+                </p>
+              </div>
+            </div>
+
+            <!-- NEW FEATURE: CTA Suggestions Section -->
+            <div id="ctaSuggestionSection" style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border);">
+                <h2>Call-to-Action (CTA) Suggestions</h2>
+                <p style="text-align: center; color: var(--text-secondary); margin-bottom: 20px;">
+                    Get AI-powered suggestions for what you want your audience to do.
+                </p>
+                <div class="form-group">
+                    <label for="ctaCaptionTextarea">Caption for CTA Suggestions</label>
+                    <textarea
+                        id="ctaCaptionTextarea"
+                        name="ctaCaptionTextarea"
+                        placeholder="Paste your caption here, or it will be auto-filled from your last generation."
+                        rows="4"
+                        required
+                    ></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="postGoalSelect">Post Goal</label>
+                    <select id="postGoalSelect" name="postGoal" required>
+                        <option value="">Select a goal</option>
+                        <option value="drive traffic">Drive Website Traffic</option>
+                        <option value="increase engagement">Increase Engagement (likes, comments)</option>
+                        <option value="generate leads">Generate Leads</option>
+                        <option value="build community">Build Community</option>
+                        <option value="promote product">Promote Product/Service</option>
+                        <option value="get sign-ups">Get Sign-ups/Registrations</option>
+                        <option value="drive sales">Drive Sales</option>
+                        <option value="educate">Educate/Inform</option>
+                        <option value="entertain">Entertain</option>
+                    </select>
+                </div>
+                <button type="button" id="getCTASuggestionsBtn" class="btn btn-primary">
+                    <span class="btn-text">Get CTA Suggestions</span>
+                    <div id="ctaSuggestionsLoading" class="loading hidden">
+                        <div class="spinner"></div>
+                        Suggesting CTAs...
+                    </div>
+                </button>
+                <div id="ctaSuggestionsResults" class="analysis-results-container" style="margin-top: 25px;">
+                    <p class="placeholder" style="text-align: center; color: var(--text-secondary);">
+                        Enter a caption and select a goal to get CTA suggestions.
+                    </p>
+                </div>
+            </div>
+            <!-- END NEW FEATURE: CTA Suggestions Section -->
+
+            </form>
+
+          <div
+            id="collaborationTabContent"
+            class="tab-content hidden collaboration-section"
+          >
+            <h2>Share Your Calendar</h2>
+            <p
+              style="
+                text-align: center;
+                color: var(--text-secondary);
+                margin-bottom: 20px;
+              "
+            >
+              Generate a unique read-only link to share your scheduled posts
+              with teammates or clients.
+            </p>
+            <button
+              type="button"
+              id="generateShareLinkBtn"
+              class="btn btn-primary"
+              style="width: 100%"
+            >
+              <span class="btn-text">Generate New Share Link</span>
+              <div class="loading hidden">
+                <div class="spinner"></div>
+                Generating Link...
+              </div>
+            </button>
+
+            <div
+              id="generatedShareLinkDisplay"
+              class="share-link-display hidden"
+            >
+              <p>Your new shareable link:</p>
+              <a href="#" id="newShareLinkUrl" target="_blank"></a>
+              <div class="flex">
+                <button
+                  type="button"
+                  onclick="copyShareLink(document.getElementById('newShareLinkUrl').href)"
+                  class="btn btn-secondary"
+                >
+                  Copy Link
+                </button>
+              </div>
+            </div>
+
+            <div class="share-link-list">
+              <h3>Your Active Share Links</h3>
+              <div id="activeShareLinksContainer">
+                <p class="no-links">
+                  No active share links. Generate one above!
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="resultContainer" class="result-container hidden">
+          <h2>Generated Content</h2>
+          <div class="generated-caption">
+            <h3>Caption</h3>
+            <p id="generatedCaption"></p>
+          </div>
+          <div class="generated-hashtags">
+            <h3>Hashtags</h3>
+            <div id="generatedHashtags"></div>
+          </div>
+          <div class="flex gap-3">
+            <button onclick="savePost()" class="btn btn-primary">
+              Save Post
+            </button>
+            <button onclick="copyToClipboard()" class="btn btn-secondary">
+              Copy All
+            </button>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card">
+            <h2>Recent Saved Posts</h2>
+            <div id="savedPosts" class="saved-posts">
+              <p style="color: var(--text-secondary); text-align: center">
+                No saved posts yet. Generate your first caption!
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Recent Rewritten Captions</h2>
+            <div id="savedRewrittenCaptions" class="saved-rewritten-captions">
+              <p style="color: var(--text-secondary); text-align: center">
+                No rewritten captions saved yet.
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Quick Stats</h2>
+            <div style="display: grid; gap: 15px">
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                "
+              >
+                <span>Total Posts Generated:</span>
+                <strong id="totalPosts">0</strong>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                "
+              >
+                <span>Posts Saved:</span>
+                <strong id="savedPostsCount">0</strong>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                "
+              >
+                <span>Scheduled Posts:</span>
+                <strong id="scheduledPosts">0</strong>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                "
+              >
+                <span>Rewritten Sets Saved:</span>
+                <strong id="rewrittenSetsCount">0</strong>
+              </div>
+            </div>
+
+            <div class="stats-section">
+              <h3>Top Moods</h3>
+              <ul id="moodsBreakdown" class="stats-list">
+                <li class="placeholder">No mood data available.</li>
+              </ul>
+            </div>
+
+            <div class="stats-section">
+              <h3>Top Personas</h3>
+              <ul id="personasBreakdown" class="stats-list">
+                <li class="placeholder">No persona data available.</li>
+              </ul>
+            </div>
+
+            <div class="stats-section">
+              <h3>Top Hashtags</h3>
+              <ul id="topHashtagsList" class="stats-list">
+                <li class="placeholder">No hashtag data available.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // GLOBAL VARIABLES - Defined at the very top of the script
+      let currentUser = null;
+      // lastGeneratedContent now stores full context for emoji tab auto-fill
+      let lastGeneratedContent = {
+        caption: "",
+        topic: "",
+        mood: "",
+        persona: "",
+        language: "English",
+        hashtags: [] // Initialize with an empty array
+      };
+      let lastRewrittenSuggestions = null;
+      let uploadedImageFile = null;
+      const imageUploadInput = document.getElementById("imageUpload");
+      const imagePreviewDiv = document.getElementById("imagePreview");
+      const previewImage = document.getElementById("previewImage");
+      const removeImageBtn = document.getElementById("removeImageBtn");
+
+      // Core Text Input form elements
+      const textGenerateForm = document.getElementById("textGenerateForm");
+      const topicInput = document.getElementById("topic");
+      const moodSelect = document.getElementById("mood");
+      const personaSelect = document.getElementById("persona");
+      const trendingTopicSelect = document.getElementById("trendingTopic");
+      const languageSelect = document.getElementById("language");
+      const generatedCaptionDisplay = document.getElementById(
+        "generatedCaptionDisplay"
+      ); // Display-only textarea
+
+      const imageGenerateForm = document.getElementById("imageGenerateForm");
+      const collaborationTabContent = document.getElementById(
+        "collaborationTabContent"
+      );
+      const captionRewriterForm = document.getElementById(
+        "captionRewriterForm"
+      );
+      const originalCaptionTextarea =
+        document.getElementById("originalCaption");
+      const rewriteMoodSelect = document.getElementById("rewriteMood");
+      const rewriteLengthSelect = document.getElementById("rewriteLength");
+      const rewriteLanguageSelect = document.getElementById("rewriteLanguage");
+
+      const rewrittenSuggestionsContainer = document.getElementById(
+        "rewrittenSuggestionsContainer"
+      );
+      const rewrittenCaptionsList = document.getElementById(
+        "rewrittenCaptionsList"
+      );
+      const saveAllRewrittenBtn = document.getElementById(
+        "saveAllRewrittenBtn"
+      );
+
+      const tabButtons = document.querySelectorAll(".tab-button");
+
+      const alertContainer = document.getElementById("alert-container");
+      // NEW: Alert container for preferences section
+      const preferencesAlertContainer = document.getElementById("preferences-alert-container");
+
+
+      const moodsBreakdownList = document.getElementById("moodsBreakdown");
+      const personasBreakdownList =
+        document.getElementById("personasBreakdown");
+      const topHashtagsList = document.getElementById("topHashtagsList");
+      const rewrittenSetsCountSpan =
+        document.getElementById("rewrittenSetsCount");
+
+      const generateShareLinkBtn = document.getElementById(
+        "generateShareLinkBtn"
+      );
+      const generatedShareLinkDisplay = document.getElementById(
+        "generatedShareLinkDisplay"
+      );
+      const newShareLinkUrl = document.getElementById("newShareLinkUrl");
+      const activeShareLinksContainer = document.getElementById(
+        "activeShareLinksContainer"
+      );
+
+      // NEW: Emoji Suggestion Tab elements
+      const emojiSuggestionForm = document.getElementById(
+        "emojiSuggestionForm"
+      );
+      const emojiCaptionTextarea = document.getElementById(
+        "emojiCaptionTextarea"
+      );
+      const emojiMoodSelect = document.getElementById("emojiMood");
+      const emojiTopicInput = document.getElementById("emojiTopic");
+      const emojiPersonaSelect = document.getElementById("emojiPersona");
+      const emojiLanguageSelect = document.getElementById("emojiLanguage");
+      const aiEmojiCategoriesContainer = document.getElementById(
+        "aiEmojiCategoriesContainer"
+      );
+      const aiEmojiCategoryButtons = document.getElementById(
+        "aiEmojiCategoryButtons"
+      );
+      const aiLoadingEmojisSpinner =
+        aiEmojiCategoriesContainer.querySelector(".loading-emojis");
+
+      const aiSelectedCategoryEmojisContainer = document.getElementById(
+        "aiSelectedCategoryEmojisContainer"
+      );
+      const selectedCategoryTitle = document.getElementById(
+        "selectedCategoryTitle"
+      );
+      const aiSelectedEmojisList = document.getElementById(
+        "aiSelectedEmojisList"
+      );
+      const copySelectedEmojisBtn = document.getElementById(
+        "copySelectedEmojisBtn"
+      );
+
+      // NEW: Hashtag Analysis Elements
+      const hashtagsToAnalyzeTextarea = document.getElementById("hashtagsToAnalyzeTextarea");
+      const analyzeHashtagsBtn = document.getElementById("analyzeHashtagsBtn");
+      const hashtagAnalysisResults = document.getElementById("hashtagAnalysisResults");
+      const hashtagAnalysisLoading = document.getElementById("hashtagAnalysisLoading");
+
+
+      // NEW: Brand Preferences Elements
+      const brandPreferencesForm = document.getElementById("brandPreferencesForm");
+      const brandVoiceInput = document.getElementById("brandVoiceInput");
+      const targetAudienceInput = document.getElementById("targetAudienceInput");
+
+      // NEW: CTA Suggestion Elements
+      const ctaCaptionTextarea = document.getElementById("ctaCaptionTextarea");
+      const postGoalSelect = document.getElementById("postGoalSelect");
+      const getCTASuggestionsBtn = document.getElementById("getCTASuggestionsBtn");
+      const ctaSuggestionsLoading = document.getElementById("ctaSuggestionsLoading");
+      const ctaSuggestionsResults = document.getElementById("ctaSuggestionsResults");
+
+
+      // Stores the AI's structured emoji suggestions received from backend
+      let aiEmojiSuggestionsData = [];
+
+      // Reference to the textarea element currently active for emoji picker insertion
+      let currentActiveEmojiTextarea = null;
+
+      // --- HELPER FUNCTIONS (Globally Accessible) ---
+
+      // MODIFIED: showAlert to accept an optional container
+      function showAlert(message, type, container = alertContainer) {
+        console.log(`showAlert: Displaying ${type} - ${message} in container:`, container.id);
+        if (container) {
+          container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+          setTimeout(() => {
+            container.innerHTML = "";
+          }, 5000);
+        } else {
+          console.warn("Alert container not found. Message:", message);
+        }
+      }
+
+      async function logout() {
+        console.log("logout: Initiated.");
+        try {
+          await fetch("/api/auth/logout", {
+            method: "POST",
+            credentials: "include",
+          });
+          console.log("logout: Successful, redirecting.");
+          window.location.href = "index.html";
+        } catch (error) {
+          console.error("logout: Error:", error);
+          window.location.href = "index.html";
+        }
+      }
+
+      // Updated to store data in lastGeneratedContent
+      function displayGeneratedContent(content) {
+        console.log("displayGeneratedContent: Updating main content display.");
+        if (document.getElementById("generatedCaption")) {
+          // Defensive check
+          document.getElementById("generatedCaption").textContent =
+            content.caption || "";
+        }
+        if (document.getElementById("generatedHashtags")) {
+          // Defensive check
+          document.getElementById("generatedHashtags").innerHTML = (
+            content.hashtags || []
+          )
+            .map((tag) => `<span class="hashtag">#${escapeHtml(tag)}</span>`) // escapeHtml for display
+            .join("");
+        }
+
+        // Store the full context of this generation for the Emoji tab
+        lastGeneratedContent = {
+          caption: content.caption || "",
+          topic: content.metadata.topic || "", // From topic input
+          mood: content.metadata.mood || "", // From mood select
+          persona: content.metadata.persona || "", // From persona select
+          language: content.metadata.language || "English",
+          hashtags: content.hashtags || [], // Include hashtags for potential future use or debugging
+          trendingTopic: content.metadata.trendingTopic || "", // Include for consistency
+          // NEW: Store brandVoice and targetAudience from metadata
+          brandVoice: content.metadata.brandVoice || "",
+          targetAudience: content.metadata.targetAudience || ""
+        };
+        // Update the preview textarea in the Text Input tab
+        if (generatedCaptionDisplay) {
+          // Defensive check
+          generatedCaptionDisplay.value = lastGeneratedContent.caption;
+        }
+
+        if (document.getElementById("resultContainer")) {
+          // Defensive check
+          document.getElementById("resultContainer").classList.remove("hidden");
+        }
+        if (rewrittenSuggestionsContainer) {
+          // Defensive check
+          rewrittenSuggestionsContainer.classList.add("hidden");
+        }
+        if (aiSelectedCategoryEmojisContainer) {
+          // Defensive check
+          aiSelectedCategoryEmojisContainer.classList.add("hidden");
+        }
+        if (aiEmojiCategoriesContainer) {
+          // Defensive check
+          aiEmojiCategoriesContainer.classList.add("hidden");
+        }
+        // Also hide hashtag analysis if generated content is new
+        if (hashtagAnalysisResults) hashtagAnalysisResults.innerHTML = ''; // Clear old results
+        if (hashtagAnalysisLoading) hashtagAnalysisLoading.classList.add('hidden'); // Hide loading
+        if (hashtagsToAnalyzeTextarea) hashtagsToAnalyzeTextarea.value = ''; // Clear textarea
+        // Also hide CTA suggestions if generated content is new
+        if (ctaSuggestionsResults) ctaSuggestionsResults.innerHTML = ''; // Clear old results
+        if (ctaSuggestionsLoading) ctaSuggestionsLoading.classList.add('hidden'); // Hide loading
+
+
+        console.log(
+          "displayGeneratedContent: Result container shown. lastGeneratedContent updated."
+        );
+      }
+
+      function displayRewrittenCaptions(suggestions) {
+        console.log(
+          "displayRewrittenCaptions: Updating rewritten content display."
+        );
+        lastRewrittenSuggestions = suggestions;
+        if (rewrittenCaptionsList) {
+          // Defensive check
+          rewrittenCaptionsList.innerHTML = "";
+        }
+
+        if (suggestions && suggestions.length > 0) {
+          if (rewrittenSuggestionsContainer) {
+            // Defensive check
+            rewrittenSuggestionsContainer.classList.remove("hidden");
+          }
+          suggestions.forEach((caption, index) => {
+            const suggestionItem = document.createElement("div");
+            suggestionItem.className = "suggestion-item";
+            const captionForDisplay = escapeHtml(caption || "");
+            const captionForOnClick = JSON.stringify(caption || "");
+
+            suggestionItem.innerHTML = `
+                        <span>${captionForDisplay}</span>
+                        <button onclick="copySpecificCaption(${captionForOnClick})" class="btn btn-secondary">Copy</button>
+                    `;
+            if (rewrittenCaptionsList) {
+              // Defensive check
+              rewrittenCaptionsList.appendChild(suggestionItem);
+            }
+          });
+        } else {
+          if (rewrittenSuggestionsContainer) {
+            // Defensive check
+            rewrittenSuggestionsContainer.classList.add("hidden");
+          }
+          if (rewrittenCaptionsList) {
+            // Defensive check
+            rewrittenCaptionsList.innerHTML =
+              '<p style="text-align: center; color: var(--text-secondary);">No suggestions found.</p>';
+          }
+        }
+        if (document.getElementById("resultContainer")) {
+          // Defensive check
+          document.getElementById("resultContainer").classList.add("hidden");
+        }
+        if (aiSelectedCategoryEmojisContainer) {
+          // Defensive check
+          aiSelectedCategoryEmojisContainer.classList.add("hidden");
+        }
+        if (aiEmojiCategoriesContainer) {
+          // Defensive check
+          aiEmojiCategoriesContainer.classList.add("hidden");
+        }
+        // Also hide hashtag analysis if generated content is new
+        if (hashtagAnalysisResults) hashtagAnalysisResults.innerHTML = ''; // Clear old results
+        if (hashtagAnalysisLoading) hashtagAnalysisLoading.classList.add('hidden'); // Hide loading
+        if (hashtagsToAnalyzeTextarea) hashtagsToAnalyzeTextarea.value = ''; // Clear textarea
+        // Also hide CTA suggestions if generated content is new
+        if (ctaSuggestionsResults) ctaSuggestionsResults.innerHTML = ''; // Clear old results
+        if (ctaSuggestionsLoading) ctaSuggestionsLoading.classList.add('hidden'); // Hide loading
+
+
+        console.log(
+          "displayRewrittenCaptions: Rewritten suggestions container shown."
+        );
+      }
+
+      function escapeHtml(text) {
+        if (text === null || text === undefined) return "";
+        const map = {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#039;",
+        };
+        return text.toString().replace(/[&<>"']/g, function (m) {
+          return map[m];
+        });
+      }
+
+      // Helper function to unescape HTML entities from a string
+      function unescapeHtml(escapedText) {
+        if (escapedText === null || escapedText === undefined) return "";
+        const textarea = document.createElement("textarea");
+        textarea.innerHTML = escapedText;
+        return textarea.value;
+      }
+
+      function copySpecificCaption(textToCopy) {
+        console.log("DEBUG: copySpecificCaption called with:", textToCopy);
+        if (!navigator.clipboard || !navigator.clipboard.writeText) {
+          showAlert("Clipboard API not supported in this browser.", "error");
+          console.error("DEBUG: Clipboard API not supported.");
+          return;
+        }
+
+        const plainText = unescapeHtml(textToCopy);
+
+        navigator.clipboard
+          .writeText(plainText)
+          .then(() => {
+            showAlert("Caption copied to clipboard!", "success");
+            console.log("DEBUG: copySpecificCaption successful.");
+          })
+          .catch((err) => {
+            console.error("DEBUG: copySpecificCaption failed for reason:", err);
+            showAlert("Failed to copy caption: " + err.message, "error");
+          });
+      }
+
+      // NEW: Function to insert emoji into a textarea at the cursor position
+      function insertEmojiIntoTextarea(emoji, textareaElement) {
+        if (!textareaElement) {
+          console.error(
+            "insertEmojiIntoTextarea: Target textarea element is null."
+          );
+          return;
+        }
+        const start = textareaElement.selectionStart;
+        const end = textareaElement.selectionEnd;
+        const value = textareaElement.value;
+        textareaElement.value =
+          value.substring(0, start) + emoji + value.substring(end);
+        textareaElement.selectionStart = textareaElement.selectionEnd =
+          start + emoji.length;
+        textareaElement.focus();
+        // No auto-trigger here, user clicks button for AI suggestion
+      }
+
+      // NEW: Function to display AI suggested emoji categories
+      function displayAiEmojiCategories(categories) {
+        if (!aiEmojiCategoryButtons) {
+          // Defensive check
+          console.error("Error: #aiEmojiCategoryButtons not found!");
+          return;
+        }
+        aiEmojiCategoryButtons.innerHTML = ""; // Clear previous
+        if (aiSelectedCategoryEmojisContainer) {
+          // Defensive check
+          aiSelectedCategoryEmojisContainer.classList.add("hidden"); // Hide specific emoji list
+        }
+
+        if (categories && categories.length > 0) {
+          if (aiEmojiCategoriesContainer)
+            aiEmojiCategoriesContainer.classList.remove("hidden");
+          aiEmojiCategoryButtons.classList.remove("hidden"); // Ensure button container is visible
+          aiEmojiCategoryButtons.innerHTML = categories
+            .map(
+              (cat, index) => `
+                        <button type="button" class="btn btn-secondary emoji-category-btn" data-category-index="${index}">
+                            ${escapeHtml(cat.type)}
+                        </button>
+                    `
+            )
+            .join("");
+
+          aiEmojiCategoryButtons
+            .querySelectorAll(".emoji-category-btn")
+            .forEach((button) => {
+              button.addEventListener("click", (event) => {
+                const index = parseInt(event.target.dataset.categoryIndex, 10); // Use radix 10
+                displaySelectedEmojis(aiEmojiSuggestionsData[index]);
+              });
+            });
+          aiEmojiCategoryButtons
+            .querySelector(".emoji-placeholder")
+            ?.classList.add("hidden");
+        } else {
+          if (aiEmojiCategoriesContainer)
+            aiEmojiCategoriesContainer.classList.remove("hidden");
+          aiEmojiCategoryButtons.innerHTML = `<span class="emoji-placeholder">No emoji categories suggested.</span>`;
+        }
+        if (aiLoadingEmojisSpinner)
+          aiLoadingEmojisSpinner.classList.add("hidden");
+      }
+
+      // NEW: Function to display emojis for a selected category
+      function displaySelectedEmojis(selectedCategory) {
+        if (!aiSelectedEmojisList || !selectedCategoryTitle) {
+          // Defensive check
+          console.error(
+            "Error: #aiSelectedEmojisList or #selectedCategoryTitle not found!"
+          );
+          return;
+        }
+        aiSelectedEmojisList.innerHTML = ""; // Clear previous emojis
+        selectedCategoryTitle.textContent = `Suggested Emojis (${escapeHtml(
+          selectedCategory.type || "N/A"
+        )}):`;
+
+        if (
+          selectedCategory &&
+          selectedCategory.emojis &&
+          selectedCategory.emojis.length > 0
+        ) {
+          if (aiSelectedCategoryEmojisContainer)
+            aiSelectedCategoryEmojisContainer.classList.remove("hidden");
+          aiSelectedEmojisList.innerHTML = selectedCategory.emojis
+            .map(
+              (emoji) => `
+                        <span class="ai-suggested-emoji" data-emoji="${emoji}">${emoji}</span>
+                    `
+            )
+            .join("");
+
+          aiSelectedEmojisList
+            .querySelectorAll(".ai-suggested-emoji")
+            .forEach((emojiSpan) => {
+              emojiSpan.addEventListener("click", () => {
+                insertEmojiIntoTextarea(
+                  emojiSpan.dataset.emoji,
+                  emojiCaptionTextarea
+                );
+              });
+            });
+        } else {
+          if (aiSelectedCategoryEmojisContainer)
+            aiSelectedCategoryEmojisContainer.classList.add("hidden");
+          aiSelectedEmojisList.innerHTML = `<span class="emoji-placeholder">No emojis in this category.</span>`;
+        }
+      }
+
+      // NEW: Function to fetch AI emoji suggestions
+      async function fetchAiEmojiSuggestions() {
+        const captionText = emojiCaptionTextarea
+          ? emojiCaptionTextarea.value
+          : "";
+        const mood = emojiMoodSelect ? emojiMoodSelect.value : "";
+        const topic = emojiTopicInput ? emojiTopicInput.value : "";
+        const persona = emojiPersonaSelect ? emojiPersonaSelect.value : "";
+        const language = emojiLanguageSelect
+          ? emojiLanguageSelect.value
+          : "English";
+
+        if (!captionText.trim()) {
+          if (aiEmojiCategoryButtons)
+            aiEmojiCategoryButtons.innerHTML = `<span class="emoji-placeholder">Enter your caption text to get suggestions!</span>`;
+          if (aiSelectedCategoryEmojisContainer)
+            aiSelectedCategoryEmojisContainer.classList.add("hidden");
+          if (aiLoadingEmojisSpinner)
+            aiLoadingEmojisSpinner.classList.add("hidden");
+          return;
+        }
+
+        if (aiLoadingEmojisSpinner)
+          aiLoadingEmojisSpinner.classList.remove("hidden");
+        if (aiEmojiCategoryButtons) aiEmojiCategoryButtons.innerHTML = "";
+        if (aiSelectedCategoryEmojisContainer)
+          aiSelectedCategoryEmojisContainer.classList.add("hidden");
+        if (
+          aiEmojiCategoryButtons &&
+          aiEmojiCategoryButtons.querySelector(".emoji-placeholder")
+        ) {
+          aiEmojiCategoryButtons
+            .querySelector(".emoji-placeholder")
+            .classList.add("hidden");
+        }
+
+        try {
+          const response = await fetch("/api/generate/suggest-emojis", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              captionText,
+              mood,
+              topic,
+              persona,
+              language,
+            }),
+            credentials: "include",
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            aiEmojiSuggestionsData = data.emojis || []; // Ensure it's an array
+            displayAiEmojiCategories(aiEmojiSuggestionsData);
+            showAlert("Emoji suggestions loaded!", "success");
+          } else {
+            const errorData = await response.json();
+            console.error("fetchAiEmojiSuggestions: Backend error:", errorData);
+            showAlert(
+              errorData.error || "Failed to get emoji suggestions.",
+              "error"
+            );
+            if (aiEmojiCategoryButtons)
+              aiEmojiCategoryButtons.innerHTML = `<span class="emoji-placeholder">Error fetching suggestions.</span>`;
+          }
+        } catch (error) {
+          console.error("fetchAiEmojiSuggestions: Network error:", error);
+          showAlert(
+            "Connection error. Could not get emoji suggestions.",
+            "error"
+          );
+          if (aiEmojiCategoryButtons)
+            aiEmojiCategoryButtons.innerHTML = `<span class="emoji-placeholder">Network error.</span>`;
+        } finally {
+          if (aiLoadingEmojisSpinner)
+            aiLoadingEmojisSpinner.classList.add("hidden");
+        }
+      }
+
+      // NEW: Function to fetch AI-powered hashtag analysis
+      async function fetchHashtagAnalysis() {
+        const hashtagsRaw = hashtagsToAnalyzeTextarea ? hashtagsToAnalyzeTextarea.value.trim() : "";
+        const hashtags = hashtagsRaw.split(/[,\s]+/).filter(tag => tag.length > 0).map(tag => tag.replace(/^#/, '')); // Split by comma or space, remove empty, remove '#'
+
+        if (hashtags.length === 0) {
+            hashtagAnalysisResults.innerHTML = '<p class="placeholder" style="text-align: center; color: var(--text-secondary);">Enter hashtags to analyze.</p>';
+            hashtagAnalysisLoading.classList.add('hidden');
+            return;
+        }
+
+        hashtagAnalysisLoading.classList.remove('hidden');
+        hashtagAnalysisResults.innerHTML = ''; // Clear previous results
+
+        try {
+            const response = await fetch("/api/generate/analyze-hashtags", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    hashtags: hashtags,
+                    captionText: emojiCaptionTextarea.value || lastGeneratedContent.caption || "", // Provide caption context to AI
+                    language: emojiLanguageSelect.value || lastGeneratedContent.language || "English"
+                }),
+                credentials: "include",
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                displayHashtagAnalysisResults(data.analysis);
+                showAlert("Hashtag analysis complete!", "success");
+            } else {
+                const errorData = await response.json();
+                console.error("fetchHashtagAnalysis: Backend error:", errorData);
+                showAlert(
+                    errorData.error || "Failed to analyze hashtags.",
+                    "error"
+                );
+                hashtagAnalysisResults.innerHTML = `<p class="alert alert-error">Error: ${escapeHtml(errorData.error || 'Failed to analyze hashtags.')}</p>`;
+            }
+        } catch (error) {
+            console.error("fetchHashtagAnalysis: Network error:", error);
+            showAlert(
+                "Connection error. Could not analyze hashtags.",
+                "error"
+            );
+            hashtagAnalysisResults.innerHTML = `<p class="alert alert-error">Network error. Could not analyze hashtags.</p>`;
+        } finally {
+            hashtagAnalysisLoading.classList.add('hidden');
+        }
+      }
+
+      // NEW: Function to display hashtag analysis results
+      function displayHashtagAnalysisResults(analysis) {
+          if (!hashtagAnalysisResults) return;
+
+          if (!analysis || analysis.length === 0) {
+              hashtagAnalysisResults.innerHTML = '<p class="placeholder" style="text-align: center; color: var(--text-secondary);">No analysis results found.</p>';
+              return;
+          }
+
+          let html = '<h3>Analysis Results:</h3><div class="hashtag-analysis-list">';
+          analysis.forEach(item => {
+              let tagClass = '';
+              let icon = '';
+              let boldCategory = '';
+              let displayReason = item.reason ? `<span class="reason">(${escapeHtml(item.reason)})</span>` : '';
+
+              switch (item.category) {
+                  case 'banned':
+                      tagClass = 'analysis-banned';
+                      icon = '🚫';
+                      boldCategory = 'BANNED';
+                      break;
+                  case 'overused':
+                  case 'overused_ai': // From AI
+                      tagClass = 'analysis-overused';
+                      icon = '⚠️';
+                      boldCategory = 'OVERUSED';
+                      break;
+                  case 'spammy/low_quality':
+                      tagClass = 'analysis-spammy';
+                      icon = '🗑️';
+                      boldCategory = 'SPAMMY/LOW QUALITY';
+                      break;
+                  case 'caution':
+                      tagClass = 'analysis-caution';
+                      icon = '🚨';
+                      boldCategory = 'CAUTION';
+                      break;
+                  case 'safe':
+                  case 'safe/niche': // From AI
+                      tagClass = 'analysis-safe';
+                      icon = '✅';
+                      boldCategory = 'SAFE';
+                      break;
+                  default:
+                      tagClass = 'analysis-unknown';
+                      icon = '❓';
+                      boldCategory = 'UNKNOWN';
+              }
+
+              html += `
+                    <div class="analysis-item ${tagClass}">
+                        <span class="icon">${icon}</span>
+                        <span class="hashtag-text">#${escapeHtml(item.hashtag)}</span>
+                        <span class="category"><strong>${boldCategory}</strong></span>
+                        ${displayReason}
+                    </div>
+                `;
+          });
+          html += '</div>';
+          hashtagAnalysisResults.innerHTML = html;
+      }
+
+      // NEW: Function to fetch AI-powered CTA suggestions
+      async function fetchCTASuggestions() {
+          const captionText = ctaCaptionTextarea.value.trim();
+          const postGoal = postGoalSelect.value;
+
+          if (!captionText || !postGoal) {
+              showAlert("Please provide a caption and select a post goal for CTA suggestions.", "error");
+              return;
+          }
+
+          ctaSuggestionsLoading.classList.remove('hidden');
+          ctaSuggestionsResults.innerHTML = ''; // Clear previous results
+
+          try {
+              const response = await fetch("/api/generate/suggest-ctas", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                      captionText: captionText,
+                      postGoal: postGoal,
+                      topic: lastGeneratedContent.topic || "",
+                      mood: lastGeneratedContent.mood || "",
+                      persona: lastGeneratedContent.persona || "",
+                      language: lastGeneratedContent.language || "English",
+                      brandVoice: currentUser.user.brand_voice || "", // Use saved preference
+                      targetAudience: currentUser.user.target_audience || "" // Use saved preference
+                  }),
+                  credentials: "include",
+              });
+
+              if (response.ok) {
+                  const data = await response.json();
+                  displayCTASuggestions(data.ctas);
+                  showAlert("CTA suggestions loaded!", "success");
+              } else {
+                  const errorData = await response.json();
+                  console.error("fetchCTASuggestions: Backend error:", errorData);
+                  showAlert(
+                      errorData.error || "Failed to get CTA suggestions.",
+                      "error"
+                  );
+                  ctaSuggestionsResults.innerHTML = `<p class="alert alert-error">Error: ${escapeHtml(errorData.error || 'Failed to get CTA suggestions.')}</p>`;
+              }
+          } catch (error) {
+              console.error("fetchCTASuggestions: Network error:", error);
+              showAlert(
+                  "Connection error. Could not get CTA suggestions.",
+                  "error"
+              );
+              ctaSuggestionsResults.innerHTML = `<p class="alert alert-error">Network error. Could not get CTA suggestions.</p>`;
+          } finally {
+              ctaSuggestionsLoading.classList.add('hidden');
+          }
+      }
+
+      // NEW: Function to display CTA suggestions
+      function displayCTASuggestions(ctas) {
+          if (!ctaSuggestionsResults) return;
+
+          if (!ctas || ctas.length === 0) {
+              ctaSuggestionsResults.innerHTML = '<p class="placeholder" style="text-align: center; color: var(--text-secondary);">No CTA suggestions found.</p>';
+              return;
+          }
+
+          let html = '<h3>Suggested CTAs:</h3><div class="cta-suggestions-list">';
+          ctas.forEach(cta => {
+              const ctaForDisplay = escapeHtml(cta);
+              const ctaForCopy = JSON.stringify(cta); // For onclick copy
+
+              html += `
+                  <div class="cta-item">
+                      <span>${ctaForDisplay}</span>
+                      <button onclick="copySpecificCaption(${ctaForCopy})" class="btn btn-secondary btn-sm">Copy</button>
+                  </div>
+              `;
+          });
+          html += '</div>';
+          ctaSuggestionsResults.innerHTML = html;
+      }
+
+
+      async function savePost() {
+        console.log("savePost: Function called.");
+        if (
+          !lastGeneratedContent ||
+          !lastGeneratedContent.caption ||
+          !Array.isArray(lastGeneratedContent.hashtags) ||
+          lastGeneratedContent.hashtags.length === 0
+        ) {
+          showAlert(
+            "No valid content to save. Generate content first!",
+            "error"
+          );
+          console.warn(
+            "savePost: Validation failed for lastGeneratedContent:",
+            lastGeneratedContent
+          );
+          return;
+        }
+
+        const payloadToSend = {
+          topic: lastGeneratedContent.topic,
+          mood: lastGeneratedContent.mood,
+          persona: lastGeneratedContent.persona,
+          trendingTopic: lastGeneratedContent.trendingTopic,
+          caption: lastGeneratedContent.caption,
+          hashtags: lastGeneratedContent.hashtags,
+          language: lastGeneratedContent.language,
+        };
+        console.log("savePost: Payload being sent to backend:", payloadToSend);
+
+        try {
+          console.log("savePost: Fetching /api/generate/save...");
+          const response = await fetch("/api/generate/save", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payloadToSend),
+            credentials: "include",
+          });
+          console.log("savePost: Response status:", response.status);
+
+          if (response.ok) {
+            const responseData = await response.json(); // Capture response data
+            showAlert("Post saved successfully!", "success");
+            console.log("savePost: Backend responded OK.");
+            await loadSavedPosts();
+            await loadStats();
+            if (document.getElementById("resultContainer")) {
+              document.getElementById("resultContainer").classList.add("hidden");
+            }
+            // Update lastGeneratedContent if needed after save, or keep as is for re-use
+            // For example, if you want to clear the form after saving:
+            // topicInput.value = ''; moodSelect.value = ''; personaSelect.value = '';
+            // generatedCaptionDisplay.value = '';
+            // lastGeneratedContent = { caption: "", topic: "", mood: "", persona: "", language: "English", hashtags: [] };
+
+          } else {
+            const error = await response.json();
+            console.error("savePost: Backend error response:", error);
+            showAlert(error.error || "Failed to save post.", "error");
+          }
+        } catch (error) {
+          console.error("savePost: Connection or network error:", error);
+          showAlert("Connection error. Please try again.", "error");
+        }
+      }
+
+      async function saveAllRewrittenCaptions() {
+        console.log("saveAllRewrittenCaptions: Function called.");
+
+        const originalCaptionInput = document.getElementById("originalCaption");
+        const rewriteMoodInput = document.getElementById("rewriteMood");
+        const rewriteLengthInput = document.getElementById("rewriteLength");
+        const rewriteLanguageInput = document.getElementById("rewriteLanguage");
+
+        if (
+          !lastRewrittenSuggestions ||
+          lastRewrittenSuggestions.length === 0
+        ) {
+          showAlert(
+            "No rewritten captions to save. Generate them first!",
+            "error"
+          );
+          return;
+        }
+
+        const payloadToSend = {
+          originalCaption: originalCaptionInput
+            ? originalCaptionInput.value
+            : "",
+          mood: rewriteMoodInput ? rewriteMoodInput.value : "",
+          length: rewriteLengthInput ? rewriteLengthInput.value : "",
+          language: rewriteLanguageInput
+            ? rewriteLanguageInput.value
+            : "English",
+          suggestions: lastRewrittenSuggestions,
+        };
+        console.log(
+          "saveAllRewrittenCaptions: Payload being sent to backend:",
+          payloadToSend
+        );
+
+        if (
+          !payloadToSend.originalCaption ||
+          !payloadToSend.mood ||
+          !payloadToSend.length ||
+          !payloadToSend.language
+        ) {
+          showAlert(
+            "Missing details for saving rewritten captions (original caption, mood, length, or language).",
+            "error"
+          );
+          return;
+        }
+
+        const btn = saveAllRewrittenBtn;
+        const btnText = btn.querySelector(".btn-text") || btn;
+        const loadingSpinner =
+          btn.querySelector(".loading") || document.createElement("div");
+
+        if (btn) btn.disabled = true;
+        if (btn && btn.querySelector(".btn-text"))
+          btn.querySelector(".btn-text").classList.add("hidden");
+        if (loadingSpinner) loadingSpinner.classList.remove("hidden");
+        showAlert("Saving all rewritten captions...", "info");
+
+        try {
+          const response = await fetch("/api/generate/save-rewritten", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payloadToSend),
+            credentials: "include",
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            showAlert("All rewritten captions saved successfully!", "success");
+            console.log(
+              "saveAllRewrittenCaptions: Backend responded OK. Set ID:",
+              data.setId
+            );
+            await loadRewrittenCaptionSets();
+            await loadStats();
+            if (rewrittenSuggestionsContainer)
+              rewrittenSuggestionsContainer.classList.add("hidden");
+            // Update lastGeneratedContent for emoji tab auto-fill
+            lastGeneratedContent = {
+              caption: originalCaptionInput
+                ? originalCaptionInput.value || ""
+                : "",
+              topic: "", // Rewriter doesn't have a direct topic
+              mood: rewriteMoodInput ? rewriteMoodInput.value || "" : "",
+              persona: "", // Rewriter doesn't have a direct persona
+              language: rewriteLanguageInput
+                ? rewriteLanguageInput.value || "English"
+                : "English",
+            };
+            if (originalCaptionInput) originalCaptionInput.value = "";
+            if (rewriteMoodInput) rewriteMoodInput.value = "";
+            if (rewriteLengthInput) rewriteLengthInput.value = "";
+            if (rewriteLanguageInput) rewriteLanguageInput.value = "English";
+            lastRewrittenSuggestions = null;
+          } else {
+            const error = await response.json();
+            console.error(
+              "saveAllRewrittenCaptions: Backend error response:",
+              error
+            );
+            showAlert(
+              error.error || "Failed to save rewritten captions.",
+              "error"
+            );
+          }
+        } catch (error) {
+          console.error(
+            "saveAllRewrittenCaptions: Connection or network error:",
+            error
+          );
+          showAlert("Connection error. Please try again.", "error");
+        } finally {
+          if (btn) btn.disabled = false;
+          if (btn && btn.querySelector(".btn-text"))
+            btn.querySelector(".btn-text").classList.remove("hidden");
+          if (loadingSpinner) loadingSpinner.classList.add("hidden");
+        }
+      }
+
+      function copyToClipboard() {
+        console.log("copyToClipboard: Function called.");
+
+        if (
+          !lastGeneratedContent ||
+          (!lastGeneratedContent.caption &&
+            (!Array.isArray(lastGeneratedContent.hashtags) ||
+              lastGeneratedContent.hashtags.length === 0))
+        ) {
+          showAlert("No content to copy. Generate something first!", "error");
+          console.warn(
+            "copyToClipboard: lastGeneratedContent is null or empty.",
+            lastGeneratedContent
+          );
+          return;
+        }
+
+        const captionText = lastGeneratedContent.caption || "";
+        const hashtagsText =
+          Array.isArray(lastGeneratedContent.hashtags) &&
+          lastGeneratedContent.hashtags.length > 0
+            ? lastGeneratedContent.hashtags
+                .map((tag) => `#${escapeHtml(tag)}`)
+                .join(" ") // escape for consistency
+            : "";
+
+        let textToCopy = captionText;
+        if (hashtagsText) {
+          textToCopy += (textToCopy ? "\n\n" : "") + hashtagsText;
+        }
+
+        if (!textToCopy) {
+          showAlert("No content to copy. Generate something first!", "error");
+          console.warn(
+            "copyToClipboard: No text to copy after combining caption and hashtags."
+          );
+          return;
+        }
+
+        console.log("copyToClipboard: Attempting to copy text:", textToCopy);
+
+        if (!navigator.clipboard || !navigator.clipboard.writeText) {
+          showAlert(
+            "Clipboard API not supported in this browser or context.",
+            "error"
+          );
+          console.error(
+            "copyToClipboard: navigator.clipboard.writeText is not available."
+          );
+          return;
+        }
+
+        navigator.clipboard
+          .writeText(textToCopy)
+          .then(() => {
+            showAlert("Content copied to clipboard!", "success");
+            console.log(
+              "copyToClipboard: Text successfully copied to clipboard."
+            );
+          })
+          .catch((error) => {
+            console.error("copyToClipboard: Clipboard copy failed:", error);
+            showAlert(
+              `Failed to copy content. ${
+                error.message || "Please check browser permissions."
+              }`,
+              "error"
+            );
+          });
+      }
+
+      // Function to copy the selected AI-suggested emojis
+      function copySelectedEmojis() {
+        if (!aiSelectedEmojisList || !aiSelectedEmojisList.textContent.trim()) {
+          // Defensive check
+          showAlert(
+            "No emojis to copy. Select an emoji category first!",
+            "error"
+          );
+          return;
+        }
+        // Collect all emojis from the currently displayed list
+        const emojisToCopy = Array.from(
+          aiSelectedEmojisList.querySelectorAll(".ai-suggested-emoji")
+        )
+          .map((span) => span.dataset.emoji) // Get the emoji from the data-emoji attribute
+          .join(""); // Join them directly without spaces for a clean copy
+
+        if (!navigator.clipboard || !navigator.clipboard.writeText) {
+          showAlert("Clipboard API not supported in this browser.", "error");
+          return;
+        }
+
+        navigator.clipboard
+          .writeText(emojisToCopy)
+          .then(() => {
+            showAlert("Emojis copied to clipboard!", "success");
+          })
+          .catch((err) => {
+            console.error("copySelectedEmojis: Failed to copy:", err);
+            showAlert("Failed to copy emojis: " + err.message, "error");
+          });
+      }
+
+      async function loadSavedPosts() {
+        console.log("loadSavedPosts: Loading saved posts (original type)...");
+        try {
+          const response = await fetch("/api/generate/saved", {
+            credentials: "include",
+          });
+
+          if (!response.ok) {
+            console.error(
+              "loadSavedPosts: Failed to fetch saved posts, status:",
+              response.status
+            );
+            const errorData = await response
+              .json()
+              .catch(() => ({ error: "Unknown error" }));
+            throw new Error(
+              errorData.error || `Failed with status: ${response.status}`
+            );
+          }
+
+          const posts = await response.json();
+          console.log("loadSavedPosts: Received saved posts:", posts);
+
+          const container = document.getElementById("savedPosts");
+
+          if (!container) {
+            console.error("Error: #savedPosts container not found!");
+            showAlert(
+              "Error: Display container for saved posts not found.",
+              "error"
+            );
+            return;
+          }
+
+          if (posts.length === 0) {
+            container.innerHTML =
+              '<p style="color: var(--text-secondary); text-align: center;">No saved posts yet. Generate your first caption!</p>';
+            return;
+          }
+
+          container.innerHTML = posts
+            .map((post) => {
+              const createdAt = new Date(post.created_at).toLocaleDateString(
+                undefined,
+                {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }
+              );
+              return `
+                        <div class="saved-post">
+                            <div class="saved-post-meta">
+                                <span>${escapeHtml(
+                                  post.topic || ""
+                                )} • ${escapeHtml(
+                  post.mood || ""
+                )} • ${escapeHtml(post.persona || "")}</span>
+                                <button onclick="deletePost(${
+                                  post.id
+                                })" class="delete-post">Delete</button>
+                            </div>
+                            <p style="margin-bottom: 10px;"><strong>Caption:</strong> ${escapeHtml(
+                              post.caption || ""
+                            )}</p>
+                            <p><strong>Hashtags:</strong> ${escapeHtml(
+                              (post.hashtags || []).join(", ")
+                            )}</p>
+                            <div class="meta-info">Saved on: ${createdAt}</div>
+                        </div>
+                    `;
+            })
+            .join("");
+        } catch (error) {
+          console.error("loadSavedPosts: Error loading saved posts:", error);
+          showAlert(
+            "Failed to load recent saved posts: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function loadRewrittenCaptionSets() {
+        console.log(
+          "loadRewrittenCaptionSets: Loading rewritten caption sets..."
+        );
+        try {
+          const response = await fetch("/api/generate/rewritten-sets", {
+            credentials: "include",
+          });
+
+          if (!response.ok) {
+            const errorData = await response
+              .json()
+              .catch(() => ({ error: "Unknown error" }));
+            throw new Error(
+              errorData.error || `Failed with status: ${response.status}`
+            );
+          }
+
+          const sets = await response.json();
+          console.log(
+            "loadRewrittenCaptionSets: Received rewritten sets:",
+            sets
+          );
+
+          const container = document.getElementById("savedRewrittenCaptions");
+
+          if (!container) {
+            console.error(
+              "Error: #savedRewrittenCaptions container not found!"
+            );
+            showAlert(
+              "Error: Display container for rewritten captions not found.",
+              "error"
+            );
+            return;
+          }
+
+          if (sets.length === 0) {
+            container.innerHTML =
+              '<p style="color: var(--text-secondary); text-align: center;">No rewritten captions saved yet.</p>';
+            return;
+          }
+
+          container.innerHTML = sets
+            .map((set) => {
+              const createdAt = new Date(set.generated_at).toLocaleDateString(
+                undefined,
+                {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }
+              );
+
+              // Ensure set.suggestions is an array before processing
+              const currentSuggestions = Array.isArray(set.suggestions)
+                ? set.suggestions
+                : [];
+
+              const suggestionsHtml = currentSuggestions
+                .map((s) => `<li>${escapeHtml(s.caption_text || "")}</li>`)
+                .join("");
+
+              const plainTextForCopy = currentSuggestions
+                .map((s) => s.caption_text || "")
+                .join("\n");
+
+              // Use JSON.stringify for inline JS string literal safety
+              const jsonStringForCopy = JSON.stringify(plainTextForCopy);
+
+              return `
+                        <div class="rewritten-set-item">
+                            <h4>Original: "${escapeHtml(
+                              set.original_caption
+                                ? set.original_caption.substring(0, 50) +
+                                  (set.original_caption.length > 50
+                                    ? "..."
+                                    : "")
+                                : ""
+                            )}"</h4>
+                            <div class="meta-info">
+                                Mood: ${escapeHtml(
+                                  set.mood || ""
+                                )} | Length: ${escapeHtml(
+                  set.length || ""
+                )} | Language: ${escapeHtml(
+                  set.language || ""
+                )} | Generated: ${createdAt}
+                            </div>
+                            <ul>
+                                ${suggestionsHtml}
+                            </ul>
+                            <div class="actions">
+                                <button onclick="copyRewrittenSet(${jsonStringForCopy})" class="btn btn-secondary">Copy All</button>
+                                <button onclick="deleteRewrittenSet(${
+                                  set.set_id
+                                })" class="btn btn-danger">Delete Set</button>
+                            </div>
+                        </div>
+                    `;
+            })
+            .join("");
+        } catch (error) {
+          console.error(
+            "loadRewrittenCaptionSets: Error loading rewritten sets:",
+            error
+          );
+          showAlert(
+            "Failed to load recent rewritten captions. Error: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      // Function to copy all captions from a rewritten set (receives plain text from JSON.stringify)
+      function copyRewrittenSet(textToCopy) {
+        console.log("DEBUG: copyRewrittenSet called with:", textToCopy);
+        if (!navigator.clipboard || !navigator.clipboard.writeText) {
+          showAlert("Clipboard API not supported in this browser.", "error");
+          console.error("DEBUG: Clipboard API not supported.");
+          return;
+        }
+
+        const plainText = unescapeHtml(textToCopy);
+
+        navigator.clipboard
+          .writeText(plainText)
+          .then(() => {
+            showAlert("All captions copied to clipboard!", "success");
+          })
+          .catch((err) => {
+            console.error("DEBUG: copyRewrittenSet failed for reason:", err);
+            showAlert("Failed to copy captions: " + err.message, "error");
+          });
+      }
+
+      async function deleteRewrittenSet(setId) {
+        console.log("deleteRewrittenSet: Deleting rewritten set ID:", setId);
+        showCustomConfirm(
+          "Are you sure you want to delete this rewritten caption set?",
+          async () => {
+            try {
+              const response = await fetch(
+                `/api/generate/rewritten-sets/${setId}`,
+                {
+                  method: "DELETE",
+                  credentials: "include",
+                }
+              );
+
+              if (response.ok) {
+                showAlert("Rewritten set deleted successfully!", "success");
+                console.log("deleteRewrittenSet: Set deleted successfully.");
+                await loadRewrittenCaptionSets();
+                await loadStats();
+              } else {
+                const error = await response.json();
+                console.error(
+                  "deleteRewrittenSet: Backend error response:",
+                  error
+                );
+                showAlert(
+                  error.error || "Failed to delete rewritten set.",
+                  "error"
+                );
+              }
+            } catch (error) {
+              console.error("deleteRewrittenSet: Network error:", error);
+              showAlert("Connection error. Please try again.", "error");
+            }
+          }
+        );
+      }
+
+      async function deletePost(postId) {
+        console.log("deletePost: Deleting post ID:", postId);
+        // MODIFIED: Replaced native confirm with custom one
+        showCustomConfirm("Are you sure you want to delete this post?", async () => {
+          try {
+            const response = await fetch(`/api/generate/saved/${postId}`, {
+              method: "DELETE",
+              credentials: "include",
+            });
+
+            if (response.ok) {
+              showAlert("Post deleted successfully!", "success");
+              console.log("deletePost: Post deleted successfully.");
+              await loadSavedPosts();
+              await loadStats();
+            } else {
+              const error = await response.json();
+              console.error("deletePost: Backend error response:", error);
+              showAlert(error.error || "Failed to delete post.", "error");
+            }
+          } catch (error) {
+            console.error("Delete error:", error);
+            showAlert("Connection error. Please try again.", "error");
+          }
+        });
+      }
+
+      async function loadStats() {
+        console.log("loadStats: Loading stats...");
+        try {
+          const response = await fetch("/api/generate/stats", {
+            credentials: "include",
+          });
+          if (!response.ok) {
+            console.error(
+              "loadStats: Failed to fetch stats, status:",
+              response.status
+            );
+            const errorData = await response
+              .json()
+              .catch(() => ({ error: "Unknown error" }));
+            throw new Error(
+              errorData.error || `Failed with status: ${response.status}`
+            );
+          }
+          const stats = await response.json();
+          console.log("loadStats: Received stats:", stats);
+
+          document.getElementById("totalPosts").textContent =
+            stats.totalGenerated || 0;
+          document.getElementById("savedPostsCount").textContent =
+            stats.totalSaved || 0;
+          document.getElementById("scheduledPosts").textContent =
+            stats.totalScheduled || 0;
+          document.getElementById("rewrittenSetsCount").textContent =
+            stats.totalRewritten || 0;
+
+          if (stats.moodBreakdown && stats.moodBreakdown.length > 0) {
+            moodsBreakdownList.innerHTML = stats.moodBreakdown
+              .map(
+                (item) =>
+                  `<li>${escapeHtml(item.mood || "")}: <strong>${
+                    item.count
+                  }</strong></li>`
+              )
+              .join("");
+          } else {
+            moodsBreakdownList.innerHTML =
+              '<li class="placeholder">No mood data available.</li>';
+          }
+
+          if (stats.personaBreakdown && stats.personaBreakdown.length > 0) {
+            personasBreakdownList.innerHTML = stats.personaBreakdown
+              .map(
+                (item) =>
+                  `<li>${escapeHtml(item.persona || "")}: <strong>${
+                    item.count
+                  }</strong></li>`
+              )
+              .join("");
+          } else {
+            personasBreakdownList.innerHTML =
+              '<li class="placeholder">No persona data available.</li>';
+          }
+
+          if (stats.topHashtags && stats.topHashtags.length > 0) {
+            topHashtagsList.innerHTML = stats.topHashtags
+              .map(
+                (item) =>
+                  `<li>#${escapeHtml(item.hashtag || "")}: <strong>${
+                    item.count
+                  }</strong></li>`
+              )
+              .join("");
+          } else {
+            topHashtagsList.innerHTML =
+              '<li class="placeholder">No hashtag data available.</li>';
+          }
+          console.log("loadStats: Stats display updated.");
+        } catch (error) {
+          console.error("loadStats: Error loading stats:", error);
+          showAlert("Failed to load quick stats: " + error.message, "error");
+        }
+      }
+
+      async function generateShareLink() {
+        console.log("generateShareLink: Function called.");
+        const btn = generateShareLinkBtn;
+        const btnText = btn.querySelector(".btn-text");
+        const loadingSpinner = btn.querySelector(".loading");
+
+        btn.disabled = true;
+        btnText.classList.add("hidden");
+        loadingSpinner.classList.remove("hidden");
+        showAlert("Generating new share link...", "info");
+
+        try {
+          const response = await fetch("/api/share/generate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            newShareLinkUrl.href = result.shareLink.shareable_url;
+            newShareLinkUrl.textContent = result.shareLink.shareable_url;
+            generatedShareLinkDisplay.classList.remove("hidden");
+            showAlert("Share link generated successfully!", "success");
+            await loadShareLinks();
+          } else {
+            showAlert(
+              result.error || "Failed to generate share link.",
+              "error"
+            );
+          }
+        } catch (error) {
+          console.error("generateShareLink: Network or fetch error:", error);
+          showAlert("Connection error. Please try again.", "error");
+        } finally {
+          btn.disabled = false;
+          btnText.classList.remove("hidden");
+          loadingSpinner.classList.add("hidden");
+        }
+      }
+
+      async function loadShareLinks() {
+        console.log("loadShareLinks: Loading active share links...");
+        try {
+          const response = await fetch("/api/share/my-links", {
+            credentials: "include",
+          });
+
+          if (!response.ok) {
+            console.error(
+              "loadShareLinks: Failed to fetch share links, status:",
+              response.status
+            );
+            const errorData = await response
+              .json()
+              .catch(() => ({ error: "Unknown error" }));
+            throw new Error(
+              errorData.error || `Failed with status: ${response.status}`
+            );
+          }
+
+          const links = await response.json();
+          console.log("loadShareLinks: Received share links:", links);
+
+          if (links.length === 0) {
+            activeShareLinksContainer.innerHTML =
+              '<p class="no-links">No active share links. Generate one above!</p>';
+          } else {
+            activeShareLinksContainer.innerHTML = links
+              .map(
+                (link) => `
+                    <div class="share-link-item">
+                        <span><a href="${escapeHtml(
+                          link.shareable_url || ""
+                        )}" target="_blank">${escapeHtml(
+                  link.shareable_url || ""
+                )}</a></span>
+                        <div class="actions">
+                            <button onclick="copyShareLink('${escapeHtml(
+                              link.shareable_url || ""
+                            )}')" class="btn btn-secondary">Copy</button>
+                            <button onclick="deactivateShareLink(${
+                              link.id
+                            })" class="btn btn-danger">Deactivate</button>
+                        </div>
+                    </div>
+                `
+              )
+              .join("");
+          }
+        } catch (error) {
+          console.error("loadShareLinks: Error loading share links:", error);
+          showAlert("Failed to load share links: " + error.message, "error");
+        }
+      }
+
+      async function deactivateShareLink(linkId) {
+        console.log("deactivateShareLink: Deactivating link ID:", linkId);
+        showCustomConfirm(
+          "Are you sure you want to deactivate this share link?",
+          async () => {
+            try {
+              const response = await fetch(`/api/share/${linkId}`, {
+                method: "DELETE",
+                credentials: "include",
+              });
+
+              if (response.ok) {
+                showAlert("Share link deactivated successfully!", "success");
+                console.log(
+                  "deactivateShareLink: Link deactivated successfully."
+                );
+                await loadShareLinks();
+              } else {
+                const error = await response.json();
+                console.error(
+                  "deactivateShareLink: Backend error response:",
+                  error
+                );
+                showAlert(
+                  error.error || "Failed to deactivate share link.",
+                  "error"
+                );
+              }
+            } catch (error) {
+              console.error("deactivateShareLink: Network error:", error);
+              showAlert("Connection error. Please try again.", "error");
+            }
+          }
+        );
+      }
+
+      function copyShareLink(url) {
+        console.log("copyShareLink: Function called with URL:", url);
+        if (!navigator.clipboard || !navigator.clipboard.writeText) {
+          showAlert("Clipboard API not supported in this browser.", "error");
+          return;
+        }
+        navigator.clipboard
+          .writeText(url)
+          .then(() => {
+            showAlert("Share link copied to clipboard!", "success");
+          })
+          .catch((err) => {
+            console.error("copyShareLink: Failed to copy:", err);
+            showAlert("Failed to copy link.", "error");
+          });
+      }
+
+      function showCustomConfirm(message, onConfirm) {
+        // Create modal elements
+        const modal = document.createElement("div");
+        modal.style.cssText = `
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.6); display: flex; justify-content: center;
+            align-items: center; z-index: 1000;
+        `;
+        const modalContent = document.createElement("div");
+        modalContent.style.cssText = `
+            background-color: var(--card-background); padding: 30px; border-radius: 12px;
+            box-shadow: var(--shadow-elevation-medium); text-align: center; max-width: 400px;
+            width: 90%; color: var(--text-primary);
+        `;
+        const msgPara = document.createElement("p");
+        msgPara.textContent = message;
+        msgPara.style.cssText = `margin-bottom: 25px; font-size: 1.1em;`;
+
+        const btnContainer = document.createElement("div");
+        btnContainer.style.cssText = `display: flex; justify-content: center; gap: 15px;`;
+
+        const confirmBtn = document.createElement("button");
+        confirmBtn.textContent = "Confirm";
+        confirmBtn.className = "btn btn-danger"; // Use danger style for confirm
+        confirmBtn.style.cssText = `padding: 10px 25px;`;
+
+        const cancelBtn = document.createElement("button");
+        cancelBtn.textContent = "Cancel";
+        cancelBtn.className = "btn btn-secondary"; // Use secondary style for cancel
+        cancelBtn.style.cssText = `padding: 10px 25px;`;
+
+        confirmBtn.onclick = () => {
+          onConfirm();
+          document.body.removeChild(modal);
+        };
+        cancelBtn.onclick = () => {
+          document.body.removeChild(modal);
+        };
+
+        btnContainer.appendChild(cancelBtn);
+        btnContainer.appendChild(confirmBtn);
+        modalContent.appendChild(msgPara);
+        modalContent.appendChild(btnContainer);
+        modal.appendChild(modalContent);
+        document.body.appendChild(modal);
+      }
+
+      // --- New Functions Needed by Event Listeners ---
+
+      // Function to fetch trending topics and populate the select dropdowns
+      async function loadTrendingTopics() {
+        console.log('loadTrendingTopics: Attempting to load trending topics...');
+        try {
+          const response = await fetch('/data/trendingTopics.json'); // Path correct per project structure from server.js
+          if (!response.ok) {
+            console.error('Failed to fetch trending topics:', response.statusText);
+            showAlert('Failed to load trending topics.', 'error');
+            return;
+          }
+          const topics = await response.json();
+          console.log('loadTrendingTopics: Fetched', topics.length, 'trending topics.');
+
+          const addOptions = (selectElement, topicArray) => {
+            if (!selectElement) return; // Defensive check
+            const currentSelectedValue = selectElement.value; // Preserve current selection
+            selectElement.innerHTML = '<option value="">Select trending topic</option>'; // Keep default
+            topicArray.forEach(topic => {
+                const option = document.createElement('option');
+                option.value = topic;
+                option.textContent = topic;
+                selectElement.appendChild(option);
+            });
+            // Restore previous selection if it still exists
+            if (currentSelectedValue && topicArray.includes(currentSelectedValue)) {
+                selectElement.value = currentSelectedValue;
+            }
+          };
+
+          addOptions(trendingTopicSelect, topics);
+          // Assuming you have an imageTrendingTopic select as well:
+          addOptions(document.getElementById("imageTrendingTopic"), topics);
+          // showAlert('Trending topics loaded!', 'success'); // Optional: too many alerts on load
+        } catch (error) {
+          console.error('Error loading trending topics:', error);
+          showAlert('Error loading trending topics: ' + error.message, 'error');
+        }
+      }
+
+      // Function to check user authentication and update UI
+      // MODIFIED: To load and display brand preferences
+      async function checkAuthAndLoadUserData() {
+        console.log('checkAuthAndLoadUserData: Verifying user session...');
+        try {
+          const response = await fetch('/api/auth/profile', {
+            method: 'GET',
+            credentials: 'include'
+          });
+
+          if (response.ok) {
+            currentUser = await response.json();
+            console.log('checkAuthAndLoadUserData: User authenticated:', currentUser.user.username);
+            
+            // Check if currentUser and its username property exist before updating
+            if (currentUser && currentUser.user && currentUser.user.username) {
+                document.getElementById('welcomeMessage').textContent = `Welcome back, ${currentUser.user.username}!`;
+            } else {
+                console.warn('checkAuthAndLoadUserData: User authenticated but username is missing. Displaying generic message.');
+                document.getElementById('welcomeMessage').textContent = `Welcome back!`;
+            }
+
+            // NEW: Populate brand voice and target audience inputs
+            if (brandVoiceInput && currentUser.user.brand_voice) {
+                brandVoiceInput.value = currentUser.user.brand_voice;
+            }
+            if (targetAudienceInput && currentUser.user.target_audience) {
+                targetAudienceInput.value = currentUser.user.target_audience;
+            }
+
+          } else {
+            console.log('checkAuthAndLoadUserData: User not authenticated. Redirecting to login.');
+            window.location.href = 'login.html'; // Redirect to login page if not authenticated
+          }
+        } catch (error) {
+          console.error('checkAuthAndLoadUserData: Error checking authentication:', error);
+          showAlert('Failed to verify session. Please login again.', 'error');
+          window.location.href = 'login.html'; // Redirect on network/other errors too
+        }
+      }
+
+      // NEW: Function to save user brand preferences
+      async function saveUserPreferences(event) {
+        event.preventDefault();
+        console.log('saveUserPreferences: Saving brand preferences...');
+
+        const btn = event.submitter;
+        const btnText = btn.querySelector(".btn-text");
+        const loadingSpinner = btn.querySelector(".loading");
+
+        btn.disabled = true;
+        if (btnText) btnText.classList.add("hidden");
+        if (loadingSpinner) loadingSpinner.classList.remove("hidden");
+        showAlert("Saving your preferences...", "info", preferencesAlertContainer);
+
+        const brandVoice = brandVoiceInput.value.trim();
+        const targetAudience = targetAudienceInput.value.trim();
+
+        try {
+            const response = await fetch('/api/auth/profile', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ brandVoice, targetAudience }),
+                credentials: 'include',
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                showAlert("Preferences saved successfully!", "success", preferencesAlertContainer);
+                console.log('saveUserPreferences: Preferences saved:', data.user);
+                // Update currentUser global variable with new preferences
+                if (currentUser) {
+                    currentUser.user.brand_voice = data.user.brand_voice;
+                    currentUser.user.target_audience = data.user.target_audience;
+                }
+            } else {
+                const errorData = await response.json();
+                console.error('saveUserPreferences: Backend error:', errorData);
+                showAlert(errorData.error || 'Failed to save preferences.', 'error', preferencesAlertContainer);
+            }
+        } catch (error) {
+            console.error('saveUserPreferences: Network error:', error);
+            showAlert('Connection error. Could not save preferences.', 'error', preferencesAlertContainer);
+        } finally {
+            btn.disabled = false;
+            if (btnText) btnText.classList.remove("hidden");
+            if (loadingSpinner) loadingSpinner.classList.add("hidden");
+        }
+      }
+
+
+      // --- Event Listeners and Initial Load Execution ---
+      document.addEventListener('DOMContentLoaded', async () => {
+        console.log('DOMContentLoaded: Initializing dashboard...');
+
+        // 1. Check user authentication and load user data (important first step)
+        await checkAuthAndLoadUserData();
+
+        // 2. Load all dynamic content AFTER authentication check
+        await loadTrendingTopics();
+        await loadSavedPosts();
+        await loadRewrittenCaptionSets();
+        await loadStats();
+        await loadShareLinks();
+
+        // 3. Setup Tab Switching
+        tabButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const targetTabId = event.target.dataset.tab;
+                console.log(`Tab Clicked: ${targetTabId}`);
+
+                // Remove 'active' from all tab buttons and content
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+
+                // Add 'active' to clicked button and show target content
+                event.target.classList.add('active');
+                document.getElementById(targetTabId).classList.remove('hidden');
+
+                // Special handling for emoji & hashtag tab
+                if (targetTabId === 'emojiSuggestionForm') {
+                    // Auto-fill emoji caption textarea
+                    emojiCaptionTextarea.value = lastGeneratedContent.caption || "";
+                    emojiMoodSelect.value = lastGeneratedContent.mood || '';
+                    emojiTopicInput.value = lastGeneratedContent.topic || '';
+                    emojiPersonaSelect.value = lastGeneratedContent.persona || '';
+                    emojiLanguageSelect.value = lastGeneratedContent.language || 'English';
+                    // Auto-fill hashtag analysis textarea
+                    hashtagsToAnalyzeTextarea.value = (lastGeneratedContent.hashtags && lastGeneratedContent.hashtags.length > 0)
+                        ? lastGeneratedContent.hashtags.map(tag => `#${tag}`).join(' ')
+                        : '';
+                    // Auto-fill CTA caption textarea
+                    ctaCaptionTextarea.value = lastGeneratedContent.caption || "";
+                    postGoalSelect.value = ""; // Clear post goal by default
+
+                    // Automatically trigger analysis if there are hashtags or caption
+                    if (emojiCaptionTextarea.value || hashtagsToAnalyzeTextarea.value) {
+                           // Only fetch emojis if caption is available
+                        if (emojiCaptionTextarea.value) {
+                            fetchAiEmojiSuggestions();
+                        } else {
+                            if (aiEmojiCategoryButtons) aiEmojiCategoryButtons.innerHTML = `<span class="emoji-placeholder">Enter your caption text and click "Get Suggestions"!</span
+                            >`;
+                            if (aiSelectedCategoryEmojisContainer) aiSelectedCategoryEmojisContainer.classList.add("hidden");
+                        }
+                        // Always analyze hashtags if present
+                        if (hashtagsToAnalyzeTextarea.value) {
+                            fetchHashtagAnalysis();
+                        } else {
+                            hashtagAnalysisResults.innerHTML = '<p class="placeholder" style="text-align: center; color: var(--text-secondary);">Enter hashtags to analyze.</p>';
+                            hashtagAnalysisLoading.classList.add('hidden');
+                        }
+                    } else {
+                        // Clear placeholders if no content to auto-fill
+                        if (aiEmojiCategoryButtons) aiEmojiCategoryButtons.innerHTML = `<span class="emoji-placeholder">Enter your caption text and click "Get Suggestions"!</span
+                        >`;
+                        if (aiSelectedCategoryEmojisContainer) aiSelectedCategoryEmojisContainer.classList.add("hidden");
+                        hashtagAnalysisResults.innerHTML = '<p class="placeholder" style="text-align: center; color: var(--text-secondary);">Enter hashtags and click "Analyze Hashtags" to see results.</p>';
+                        hashtagAnalysisLoading.classList.add('hidden');
+                    }
+                    // Clear CTA suggestions when switching tabs
+                    ctaSuggestionsResults.innerHTML = '<p class="placeholder" style="text-align: center; color: var(--text-secondary);">Enter a caption and select a goal to get CTA suggestions.</p>';
+                    ctaSuggestionsLoading.classList.add('hidden');
+
+                }
+
+                // Hide generated content/suggestions when switching tabs, unless specific logic applies
+                if (document.getElementById("resultContainer")) document.getElementById("resultContainer").classList.add("hidden");
+                if (rewrittenSuggestionsContainer) rewrittenSuggestionsContainer.classList.add("hidden");
+                // The AI Emoji and Hashtag section itself should remain visible if its tab is active
+                // if (aiSelectedCategoryEmojisContainer) aiSelectedCategoryEmojisContainer.classList.add("hidden");
+                // if (aiEmojiCategoriesContainer) aiEmojiCategoriesContainer.classList.add("hidden");
+            });
+        });
+
+        // 4. Setup Form Submissions
+        // Text Generation Form
+        textGenerateForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission
+            console.log('Text Generate Form: Submission initiated.');
+
+            const btn = event.submitter;
+            const btnText = btn.querySelector(".btn-text");
+            const loadingSpinner = btn.querySelector(".loading");
+
+            btn.disabled = true;
+            if (btnText) btnText.classList.add("hidden");
+            if (loadingSpinner) loadingSpinner.classList.remove("hidden");
+            showAlert("Generating content...", "info");
+
+            const topic = topicInput.value.trim();
+            const mood = moodSelect.value;
+            const persona = personaSelect.value;
+            const trendingTopic = trendingTopicSelect.value;
+            const language = languageSelect.value;
+
+            // NEW: Get brand voice and target audience from the new inputs
+            const brandVoice = brandVoiceInput.value.trim();
+            const targetAudience = targetAudienceInput.value.trim();
+
+
+            if (!topic || !mood || !persona || !language) {
+                showAlert("Please fill in all required fields for text generation.", "error");
+                btn.disabled = false;
+                if (btnText) btnText.classList.remove("hidden");
+                if (loadingSpinner) loadingSpinner.classList.add("hidden");
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        topic, 
+                        mood, 
+                        persona, 
+                        trendingTopic, 
+                        language,
+                        brandVoice,     // Include brandVoice in the payload
+                        targetAudience  // Include targetAudience in the payload
+                    }),
+                    credentials: 'include',
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    displayGeneratedContent(data); // This now captures hashtags too
+                    showAlert("Content generated successfully!", "success");
+                    await loadStats(); // Update stats after generation
+                } else {
+                    const errorData = await response.json();
+                    console.error('Text Generation Failed:', errorData);
+                    showAlert(errorData.error || 'Failed to generate content.', 'error');
+                }
+            } catch (error) {
+                console.error('Network error during text generation:', error);
+                showAlert('Network error. Please try again.', 'error');
+            } finally {
+                btn.disabled = false;
+                if (btnText) btnText.classList.remove("hidden");
+                if (loadingSpinner) loadingSpinner.classList.add("hidden");
+            }
+        });
+
+        // Image Generation Form
+        imageGenerateForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            console.log('Image Generate Form: Submission initiated.');
+
+            const btn = event.submitter;
+            const btnText = btn.querySelector(".btn-text");
+            const loadingSpinner = btn.querySelector(".loading");
+
+            btn.disabled = true;
+            if (btnText) btnText.classList.add("hidden");
+            if (loadingSpinner) loadingSpinner.classList.remove("hidden");
+            showAlert("Analyzing image and generating content...", "info");
+
+            if (!uploadedImageFile) {
+                showAlert("Please upload an image.", "error");
+                btn.disabled = false;
+                if (btnText) btnText.classList.remove("hidden");
+                if (loadingSpinner) loadingSpinner.classList.add("hidden");
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onloadend = async () => {
+                const base64Image = reader.result.split(',')[1]; // Get base64 string
+                const mimeType = uploadedImageFile.type;
+                const trendingTopic = document.getElementById("imageTrendingTopic").value;
+                const language = document.getElementById("imageLanguage").value;
+
+                // NEW: Get brand voice and target audience from the new inputs
+                const brandVoice = brandVoiceInput.value.trim();
+                const targetAudience = targetAudienceInput.value.trim();
+
+                try {
+                    const response = await fetch('/api/generate/image-caption', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            image: base64Image, 
+                            mimeType, 
+                            trendingTopic, 
+                            language,
+                            brandVoice,     // Include brandVoice in the payload
+                            targetAudience  // Include targetAudience in the payload
+                        }),
+                        credentials: 'include',
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        displayGeneratedContent(data); // This now captures hashtags too
+                        showAlert("Content generated from image successfully!", "success");
+                        await loadStats(); // Update stats after generation
+                    } else {
+                        const errorData = await response.json();
+                        console.error('Image Generation Failed:', errorData);
+                        showAlert(errorData.error || 'Failed to generate content from image.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Network error during image generation:', error);
+                    showAlert('Network error. Please try again.', 'error');
+                } finally {
+                    btn.disabled = false;
+                    if (btnText) btnText.classList.remove("hidden");
+                    if (loadingSpinner) loadingSpinner.classList.add("hidden");
+                }
+            };
+            reader.readAsDataURL(uploadedImageFile);
+        });
+
+        // Event listener for image upload input (to preview and store file)
+        imageUploadInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                uploadedImageFile = file; // Store the file object
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    imagePreviewDiv.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            } else {
+                uploadedImageFile = null;
+                imageUploadInput.value = ''; // Clear the file input
+                imagePreviewDiv.classList.add('hidden');
+                previewImage.src = '';
+            }
+        });
+
+        // Event listener for removing image preview
+        removeImageBtn.addEventListener('click', () => {
+            uploadedImageFile = null;
+            imageUploadInput.value = ''; // Clear the file input
+            imagePreviewDiv.classList.add('hidden');
+            previewImage.src = '';
+        });
+
+        // Caption Rewriter Form
+        captionRewriterForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            console.log('Caption Rewriter Form: Submission initiated.');
+
+            const btn = event.submitter;
+            const btnText = btn.querySelector(".btn-text");
+            const loadingSpinner = btn.querySelector(".loading");
+
+            btn.disabled = true;
+            if (btnText) btnText.classList.add("hidden");
+            if (loadingSpinner) loadingSpinner.classList.remove("hidden");
+            showAlert("Rewriting caption...", "info");
+
+            const originalCaption = originalCaptionTextarea.value.trim();
+            const mood = rewriteMoodSelect.value;
+            const length = rewriteLengthSelect.value;
+            const language = rewriteLanguageSelect.value;
+
+            if (!originalCaption || !mood || !length || !language) {
+                showAlert("Please fill in all required fields for caption rewriting.", "error");
+                btn.disabled = false;
+                if (btnText) btnText.classList.remove("hidden");
+                if (loadingSpinner) loadingSpinner.classList.add("hidden");
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/generate/rewrite-caption', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ originalCaption, mood, length, language }),
+                    credentials: 'include',
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    displayRewrittenCaptions(data.suggestions);
+                    showAlert("Caption rewritten successfully!", "success");
+                } else {
+                    const errorData = await response.json();
+                    console.error('Caption Rewriting Failed:', errorData);
+                    showAlert(errorData.error || 'Failed to rewrite caption.', 'error');
+                }
+            } catch (error) {
+                console.error('Network error during caption rewriting:', error);
+                showAlert('Network error. Please try again.', 'error');
+            } finally {
+                btn.disabled = false;
+                if (btnText) btnText.classList.remove("hidden");
+                if (loadingSpinner) loadingSpinner.classList.add("hidden");
+            }
+        });
+
+        // Emoji Suggestion Form
+        emojiSuggestionForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            console.log('Emoji Suggestion Form: Submission initiated.');
+
+            const btn = event.submitter;
+            const btnText = btn.querySelector(".btn-text");
+            const loadingSpinner = btn.querySelector(".loading"); // This is aiLoadingEmojisSpinner from emoji suggestions
+
+            btn.disabled = true;
+            if (btnText) btnText.classList.add("hidden");
+            if (loadingSpinner) loadingSpinner.classList.remove("hidden");
+            showAlert("Getting emoji suggestions...", "info");
+
+            // Only fetch emojis if the button clicked is for emojis
+            // If the button clicked is 'Analyze Hashtags', that has its own logic
+            if (event.submitter.id === 'getEmojiSuggestionsBtn') { // Assuming you add this ID to the emoji submit button
+                await fetchAiEmojiSuggestions();
+            }
+
+            btn.disabled = false;
+            if (btnText) btnText.classList.remove("hidden");
+            if (loadingSpinner) loadingSpinner.classList.add("hidden");
+        });
+
+        // NEW: Hashtag Analysis Button Event Listener
+        if (analyzeHashtagsBtn) {
+            analyzeHashtagsBtn.addEventListener('click', fetchHashtagAnalysis);
+        }
+
+        // NEW: CTA Suggestions Button Event Listener
+        if (getCTASuggestionsBtn) {
+            getCTASuggestionsBtn.addEventListener('click', fetchCTASuggestions);
+        }
+
+        // Copy selected emojis button
+        if (copySelectedEmojisBtn) { // Defensive check
+            copySelectedEmojisBtn.addEventListener('click', copySelectedEmojis);
+        }
+
+        // Collaboration Tab: Generate Share Link Button
+        if (generateShareLinkBtn) { // Defensive check
+            generateShareLinkBtn.addEventListener('click', generateShareLink);
+        }
+
+        // Save All Rewritten Captions Button
+        if (saveAllRewrittenBtn) { // Defensive check to ensure button exists
+            saveAllRewrittenBtn.addEventListener('click', saveAllRewrittenCaptions);
+        }
+
+        // NEW: Event listener for Brand Preferences Form submission
+        if (brandPreferencesForm) {
+            brandPreferencesForm.addEventListener('submit', saveUserPreferences);
+        }
+
+      }); // End of DOMContentLoaded
+    </script>
+  </body>
+</html>

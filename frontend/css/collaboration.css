@@ -1,0 +1,74 @@
+/* Styles for Collaboration Section */
+.collaboration-section {
+  margin-top: 30px;
+  padding: 20px;
+  background-color: var(--card-background); /* Consistent card background */
+  border-radius: 12px;
+  box-shadow: var(--shadow); /* Consistent shadow */
+}
+.collaboration-section h2 {
+  color: var(--primary-color);
+  margin-bottom: 20px;
+}
+.share-link-display {
+  background-color: var(--background-color); /* Consistent background */
+  border: 1px solid var(--border-color);
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 20px;
+  word-break: break-all;
+}
+.share-link-display p {
+  margin: 0 0 10px 0;
+  font-size: 0.9em;
+  color: var(--text-secondary);
+}
+.share-link-display a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+.share-link-display a:hover {
+  text-decoration: underline;
+}
+.share-link-display .flex {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+.share-link-list {
+  margin-top: 30px;
+}
+.share-link-item {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-color);
+  gap: 10px;
+}
+.share-link-item:last-child {
+  border-bottom: none;
+}
+.share-link-item span {
+  flex-grow: 1;
+  min-width: 150px;
+  word-break: break-all;
+}
+.share-link-item .actions {
+  display: flex;
+  gap: 8px;
+}
+.share-link-item .actions button {
+  padding: 8px 15px;
+  font-size: 0.9em;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.no-links {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 20px;
+}

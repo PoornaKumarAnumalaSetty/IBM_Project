@@ -1,0 +1,596 @@
+.dashboard {
+  padding: 40px 0;
+}
+
+/* Adjustments for general card content inside dashboard grid */
+.dashboard-grid .card {
+  background: var(--card-background); /* Consistent card background */
+  padding: 30px; /* Keep consistent padding for all cards */
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  transition: box-shadow 0.3s ease;
+}
+
+.dashboard-grid .card:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.dashboard-grid .card h2 {
+  font-size: 1.6rem; /* Slightly larger heading for card titles */
+  margin-bottom: 20px;
+  color: var(
+    --primary-color
+  ); /* Give card headings primary color for emphasis */
+}
+
+/* Welcome Section */
+.welcome-section {
+  text-align: center;
+  padding: 60px 0;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--primary-rgb), 0.1),
+    rgba(var(--secondary-rgb), 0.1)
+  );
+  border-radius: var(--border-radius);
+  margin-bottom: 40px;
+}
+
+.welcome-section h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.welcome-section p {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin: 0 auto 30px;
+}
+
+/* Generator Forms & Tabs */
+.generator-form {
+  background: var(--card-background); /* Consistent card background */
+  padding: 30px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 30px;
+}
+
+.generator-form h2 {
+  margin-bottom: 25px; /* More space below the heading */
+}
+
+.generator-tabs {
+  display: flex;
+  margin-bottom: 25px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tab-button {
+  background-color: transparent;
+  border: none;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+  margin-right: 15px;
+}
+
+.tab-button:hover:not(.active) {
+  color: var(--primary-color);
+  border-color: rgba(var(--primary-rgb), 0.3);
+}
+
+.tab-button.active {
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.tab-content {
+  transition: opacity 0.3s ease;
+}
+
+.tab-content.hidden {
+  display: none;
+  opacity: 0; /* Optional: for transition effect */
+}
+
+/* Image Upload Specific Styles */
+.image-preview {
+  margin-top: 15px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 10px;
+  position: relative;
+  background-color: var(--input-background); /* Consistent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 150px;
+  overflow: hidden;
+}
+
+.image-preview img {
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 4px;
+  display: block;
+  object-fit: contain;
+}
+
+.image-preview.hidden {
+  display: none;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  background-color: rgba(255, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.remove-image-btn:hover {
+  background-color: rgba(255, 0, 0, 1);
+}
+
+/* Generated Content Display */
+.result-container {
+  background: var(--card-background); /* Consistent card background */
+  padding: 30px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-top: 30px;
+}
+
+.result-container.hidden {
+  display: none;
+}
+
+.generated-caption {
+  background: var(--background);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid var(--primary-color);
+}
+
+.generated-hashtags {
+  background: var(--background);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.hashtag {
+  display: inline-block;
+  background: var(--primary-color);
+  color: var(--white);
+  padding: 4px 8px;
+  margin: 4px;
+  border-radius: 16px;
+  font-size: 14px;
+}
+
+/* --- Recent Saved Posts Section --- */
+.saved-posts {
+  display: grid;
+  gap: 25px; /* Increase space between individual saved posts */
+  margin-top: 20px;
+}
+
+.saved-post {
+  background: var(--background);
+  padding: 20px; /* Ample padding */
+  border-radius: var(--border-radius); /* Use variable for consistency */
+  border: 1px solid var(--border); /* Add a subtle border */
+  border-left: 4px solid var(--secondary-color); /* Retain accent border */
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05); /* Soft shadow for depth */
+  transition: all 0.2s ease-in-out;
+}
+
+.saved-post:hover {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); /* More pronounced shadow on hover */
+  transform: translateY(-2px); /* Subtle lift effect */
+}
+
+.saved-post-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px; /* Increased space below meta-info */
+  font-size: 0.9em; /* Slightly larger font for meta */
+  color: var(--text-secondary);
+  border-bottom: 1px dashed rgba(var(--border-rgb), 0.7); /* Add a separator line */
+  padding-bottom: 8px; /* Padding for the separator */
+}
+
+.saved-post-meta span {
+  font-weight: 600; /* Make topics/moods/personas bolder */
+  color: var(--primary-color); /* Primary color for meta categories */
+}
+
+.saved-post p {
+  font-size: 1em; /* Ensure caption is not too small */
+  margin-bottom: 8px; /* Space between caption and hashtags */
+  line-height: 1.5; /* Improve readability of text blocks */
+  color: var(--text-primary);
+}
+
+.saved-post p strong {
+  color: var(--secondary-color); /* Emphasize "Caption:" and "Hashtags:" */
+}
+
+.saved-post .hashtag {
+  font-size: 0.85em; /* Keep hashtags readable but slightly smaller */
+  padding: 5px 10px; /* More padding for hashtags */
+  margin: 3px; /* Adjust margin around hashtags */
+  background: rgba(var(--primary-rgb), 0.8); /* Slightly less opaque */
+  color: var(--white);
+  border-radius: 20px; /* More rounded pill shape */
+}
+
+.saved-post .meta-info {
+  font-size: 0.8em; /* Date/time is fine smaller */
+  color: var(--text-secondary);
+  text-align: right; /* Align date to right */
+  margin-top: 10px; /* Ensure spacing below hashtags */
+}
+
+/* --- Recent Rewritten Captions Section --- */
+.saved-rewritten-captions {
+  display: grid;
+  gap: 25px; /* Consistent spacing with saved posts */
+  margin-top: 20px;
+}
+
+.rewritten-set-item {
+  background-color: var(--background); /* Use lighter background */
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  padding: 20px; /* Consistent padding */
+  margin-bottom: 0; /* Remove default margin from original combined style */
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease-in-out;
+}
+.rewritten-set-item:hover {
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.rewritten-set-item h4 {
+  font-size: 1.15em; /* Slightly larger for original caption preview */
+  margin-top: 0;
+  margin-bottom: 12px; /* Increased spacing */
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.rewritten-set-item .meta-info {
+  font-size: 0.85em; /* Slightly larger for readability */
+  color: var(--text-secondary);
+  margin-bottom: 15px; /* More space below meta */
+  border-bottom: 1px dashed rgba(var(--border-rgb), 0.7); /* Separator line */
+  padding-bottom: 8px; /* Padding for the separator */
+}
+
+.rewritten-set-item ul {
+  list-style: none; /* Remove default bullets, we'll style custom */
+  padding: 0;
+  margin-top: 15px; /* Ensure space above list */
+  color: var(--text-primary);
+}
+
+.rewritten-set-item ul li {
+  margin-bottom: 8px; /* Space between each rewritten caption */
+  font-size: 0.95em; /* Good size for captions */
+  line-height: 1.4;
+  background-color: var(--white); /* White background for individual captions */
+  border-left: 3px solid var(--primary-color); /* Small accent line */
+  padding: 10px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03); /* Very subtle shadow */
+}
+.rewritten-set-item ul li:last-child {
+  margin-bottom: 0;
+}
+
+.rewritten-set-item .actions {
+  margin-top: 20px; /* Space above action buttons */
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end; /* Align buttons to the right */
+}
+.rewritten-set-item .actions button {
+  padding: 8px 16px; /* Larger buttons */
+  font-size: 0.9em;
+}
+
+/* --- Quick Stats Section --- */
+.card > div:first-child:not(.stats-section) {
+  /* Targets the direct child div holding total stats */
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+  border-bottom: 1px dashed rgba(var(--border-rgb), 0.7); /* Consistent separator */
+  font-size: 1.05em; /* Slightly larger text for main stats */
+}
+.card > div:first-child:not(.stats-section) span {
+  font-weight: 500;
+}
+.card > div:first-child:not(.stats-section) strong {
+  font-size: 1.2em; /* Emphasize the numbers */
+  color: var(--primary-color); /* Make numbers primary color */
+}
+
+.stats-section {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px dashed rgba(var(--border-rgb), 0.7); /* Consistent separator */
+}
+
+.stats-section:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+
+.stats-section h3 {
+  font-size: 1.2rem; /* Larger sub-headings */
+  color: var(--secondary-color); /* Use secondary color for stat sub-headings */
+  margin-bottom: 15px; /* More space below sub-heading */
+}
+
+.stats-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.stats-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0; /* More vertical padding for list items */
+  font-size: 0.95rem; /* Readable font size */
+  color: var(--text-primary);
+  border-bottom: 1px dotted rgba(var(--border-rgb), 0.5); /* Lighter separator */
+}
+.stats-list li:last-child {
+  border-bottom: none; /* No border on the last item */
+}
+
+.stats-list li strong {
+  color: var(--primary-color); /* Highlight counts with primary color */
+  font-weight: 700;
+  font-size: 1.1em; /* Make the numbers stand out more */
+}
+
+.stats-list li.placeholder {
+  color: var(--text-secondary);
+  text-align: center;
+  font-style: italic;
+  padding: 10px 0;
+}
+
+/* Dashboard: Number of Variations input (if applicable) */
+.num-variations-input {
+  margin-bottom: 20px;
+  max-width: 200px;
+}
+.num-variations-input label {
+  display: block;
+  margin-bottom: 8px;
+}
+
+/* Dashboard: Variations Container */
+.variations-container {
+  background: var(--card-background); /* Consistent card background */
+  padding: 30px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-top: 30px;
+}
+
+.variations-container.hidden {
+  display: none;
+}
+
+.variations-container h2 {
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+.variations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.variation-card {
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.variation-card:hover {
+  border-color: var(--primary-color);
+  box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.1);
+}
+
+.variation-card.selected {
+  border: 2px solid var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
+}
+
+.variation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed rgba(var(--border-rgb), 0.7);
+}
+
+.variation-header h3 {
+  font-size: 1.1rem;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+.variation-content p {
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+  color: var(--text-primary);
+  word-wrap: break-word;
+}
+
+.variation-hashtags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 15px;
+}
+
+.variation-hashtags .hashtag {
+  font-size: 12px;
+  padding: 3px 6px;
+}
+
+.variation-card .btn-use-this {
+  align-self: flex-end;
+  margin-top: auto;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+}
+
+.saved-post-variations-note {
+  font-size: 0.8em;
+  color: var(--text-secondary);
+  text-align: right;
+  margin-top: 5px;
+  margin-bottom: 0 !important;
+}
+
+/* Responsive adjustments for dashboard-grid if needed for small screens */
+@media (max-width: 768px) {
+  .variations-grid {
+    grid-template-columns: 1fr; /* Stack variations on small screens */
+  }
+}
+
+.hashtag-analysis-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+  justify-content: center; /* Center the items */
+}
+
+.analysis-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.9em;
+  font-weight: 500;
+  gap: 8px;
+  border: 1px solid var(--border);
+  background-color: var(--background-secondary);
+  box-shadow: var(--shadow-elevation-low);
+}
+
+.analysis-item .icon {
+  font-size: 1.2em;
+}
+
+.analysis-item .hashtag-text {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.analysis-item .category {
+  font-size: 0.8em;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: white;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.analysis-item .reason {
+  font-size: 0.8em;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+/* Category Specific Styles */
+.analysis-banned {
+  background-color: var(--color-danger-light);
+  border-color: var(--color-danger);
+}
+.analysis-banned .category {
+  background-color: var(--color-danger);
+}
+
+.analysis-overused {
+  background-color: var(--color-warning-light);
+  border-color: var(--color-warning);
+}
+.analysis-overused .category {
+  background-color: var(--color-warning);
+}
+
+.analysis-spammy {
+  background-color: #ffe0e0; /* Lighter red */
+  border-color: #ff6b6b; /* Red */
+}
+.analysis-spammy .category {
+  background-color: #ff6b6b;
+}
+
+.analysis-caution {
+  background-color: #fff3e0; /* Lighter orange */
+  border-color: #ff9800; /* Orange */
+}
+.analysis-caution .category {
+  background-color: #ff9800;
+}
+
+.analysis-safe {
+  background-color: var(--color-success-light);
+  border-color: var(--color-success);
+}
+.analysis-safe .category {
+  background-color: var(--color-success);
+}
+
+.analysis-unknown {
+  background-color: var(--color-info-light);
+  border-color: var(--color-info);
+}
+.analysis-unknown .category {
+  background-color: var(--color-info);
+}

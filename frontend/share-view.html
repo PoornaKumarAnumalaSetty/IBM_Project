@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shared Calendar - MoodGram</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Define a new accent color if not already in style.css */
+      :root {
+        --accent-color: #8a2be2; /* A vibrant purple-blue for highlights */
+        --text-tertiary: #6b7280; /* A softer gray for less important text */
+        --shadow-elevation-high: 0 10px 30px rgba(0, 0, 0, 0.25);
+        --shadow-elevation-low: 0 2px 8px rgba(0, 0, 0, 0.1);
+        --shadow-elevation-medium: 0 5px 15px rgba(0, 0, 0, 0.15);
+
+        /* Add gradient colors if not already in style.css */
+        --gradient-start: #8a2be2; /* Example start color for MoodGram logo */
+        --gradient-end: #ff4500; /* Example end color for MoodGram logo */
+      }
+
+      /* General Body and Layout */
+      body {
+        background: linear-gradient(
+          135deg,
+          var(--background-color) 0%,
+          #e0e5ec 100%
+        ); /* Subtle gradient background */
+        color: var(--text-primary);
+        font-family: "Inter", sans-serif;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        justify-content: center; /* Center content vertically */
+        align-items: center; /* Center content horizontally */
+      }
+
+      /* Header Styling (consistent with other pages, but slightly enhanced) */
+      .header {
+        background-color: var(--card-background);
+        padding: 15px 25px;
+        box-shadow: var(--shadow-elevation-medium); /* Stronger shadow */
+        border-bottom: 1px solid var(--border-color);
+        width: 100%; /* Ensure header spans full width */
+        position: fixed; /* Keep header at top */
+        top: 0;
+        left: 0;
+        z-index: 100;
+      }
+
+      .header-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* UPDATED: MoodGram Logo Gradient Styling */
+      .logo {
+        font-size: 1.8em;
+        font-weight: 700;
+        /* Removed color: var(--primary-color); */
+        text-decoration: none;
+        transition: all 0.2s ease; /* Smooth transition for hover */
+
+        /* Gradient properties */
+        background-image: linear-gradient(
+          to right,
+          var(--gradient-start),
+          var(--gradient-end)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-fill-color: transparent;
+      }
+
+      .logo:hover {
+        /* Adjust gradient slightly on hover for effect */
+        background-image: linear-gradient(
+          to right,
+          var(--gradient-end),
+          var(--gradient-start)
+        );
+      }
+
+      .nav-links a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        margin-left: 25px;
+        font-weight: 500;
+        transition: color 0.2s ease;
+      }
+
+      .nav-links a:hover {
+        color: var(--primary-color);
+      }
+
+      /* Main Container for Shared Content */
+      .container {
+        max-width: 900px;
+        width: 95%; /* Make it slightly more fluid */
+        margin: 100px auto 40px auto; /* Adjust margin for fixed header */
+        padding: 35px; /* Increased padding */
+        background-color: var(--card-background);
+        border-radius: 15px; /* More rounded corners */
+        box-shadow: var(--shadow-elevation-high); /* More prominent shadow */
+        flex-grow: 1;
+        box-sizing: border-box;
+        animation: fadeInScale 0.6s ease-out; /* Add entry animation */
+      }
+
+      /* Titles and Owner Info */
+      h1#pageTitle {
+        color: var(--primary-color); /* Primary color for main title */
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 2.5em; /* Even larger title */
+        font-weight: 800; /* Bolder */
+        letter-spacing: -0.02em;
+      }
+
+      .owner-info {
+        text-align: center;
+        margin-bottom: 50px; /* More space */
+        font-size: 1.2em; /* Slightly larger */
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+
+      .owner-info strong {
+        color: var(--accent-color); /* Highlight owner name with accent */
+        font-weight: 700;
+      }
+
+      /* Scheduled Posts List */
+      .scheduled-posts-list {
+        display: grid;
+        gap: 30px; /* Increased gap between posts */
+      }
+
+      .post-item {
+        background-color: #fdfdff; /* Slightly different background for post cards */
+        padding: 25px;
+        border-radius: 12px; /* Consistent rounded corners */
+        box-shadow: var(
+          --shadow-elevation-medium
+        ); /* Medium shadow for cards */
+        border: 1px solid #e0e0e0; /* Lighter border */
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .post-item:hover {
+        transform: translateY(-5px); /* More pronounced lift on hover */
+        box-shadow: var(--shadow-elevation-high); /* Stronger shadow on hover */
+      }
+
+      .post-item h3 {
+        color: var(--primary-color);
+        margin-top: 0;
+        margin-bottom: 15px; /* More space */
+        font-size: 1.6em; /* Larger topic title */
+        font-weight: 700;
+      }
+
+      .post-item p {
+        margin-bottom: 10px;
+        color: var(--text-primary); /* Main text color */
+        font-size: 1.05em;
+      }
+
+      .post-item strong {
+        color: var(--accent-color); /* Highlighted info in accent color */
+        font-weight: 600;
+      }
+
+      .post-item .hashtags {
+        font-style: italic;
+        color: var(--text-tertiary); /* Lighter color for hashtags */
+        font-size: 0.9em;
+        margin-top: 15px;
+        margin-bottom: 20px;
+        line-height: 1.5;
+        padding-top: 15px;
+        border-top: 1px dashed var(--border-color); /* Dashed separator */
+      }
+
+      .post-item .date-time {
+        font-weight: 700; /* Bolder date/time */
+        color: var(--accent-color);
+        margin-top: 15px;
+        margin-bottom: 15px;
+        display: block;
+        font-size: 1.1em;
+        border-top: 1px solid var(--border-color); /* Solid separator */
+        padding-top: 15px;
+      }
+
+      /* Placeholder and Alert Styles */
+      .no-posts {
+        text-align: center;
+        color: var(--text-secondary);
+        padding: 30px;
+        font-size: 1.2em;
+        font-weight: 500;
+      }
+
+      .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        font-weight: 500;
+        text-align: center;
+        opacity: 0; /* Start hidden for animation */
+        animation: fadeIn 0.3s forwards;
+      }
+      .alert-error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+      .alert-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
+
+      /* Keyframe Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeInScale {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      /* Responsive Adjustments */
+      @media (max-width: 768px) {
+        .container {
+          margin: 80px auto 20px auto;
+          padding: 25px;
+        }
+        h1#pageTitle {
+          font-size: 2em;
+        }
+        .owner-info {
+          font-size: 1em;
+        }
+        .post-item h3 {
+          font-size: 1.4em;
+        }
+        .post-item {
+          padding: 20px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .header-content {
+          flex-direction: column;
+          gap: 10px;
+        }
+        .nav-links {
+          margin-top: 10px;
+        }
+        .nav-links a {
+          margin: 0 10px;
+        }
+        .container {
+          margin: 70px 15px 15px 15px;
+          padding: 15px;
+        }
+        h1#pageTitle {
+          font-size: 1.8em;
+        }
+        .owner-info {
+          font-size: 0.9em;
+          margin-bottom: 30px;
+        }
+        .post-item h3 {
+          font-size: 1.2em;
+        }
+        .post-item p {
+          font-size: 0.95em;
+        }
+        .post-item .hashtags,
+        .post-item .date-time {
+          font-size: 0.85em;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-content">
+        <a href="/" class="logo">MoodGram</a>
+        <nav class="nav-links">
+          <a href="/login.html">Sign In</a>
+          <a href="/register.html">Sign Up</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="container">
+      <div id="alert-container"></div>
+      <h1 id="pageTitle">Loading Shared Calendar...</h1>
+      <p class="owner-info">Shared by <strong id="ownerUsername"></strong></p>
+      <div id="scheduledPostsContainer" class="scheduled-posts-list">
+        <p class="no-posts">Loading posts...</p>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const alertContainer = document.getElementById("alert-container");
+        const pageTitle = document.getElementById("pageTitle");
+        const ownerUsername = document.getElementById("ownerUsername");
+        const scheduledPostsContainer = document.getElementById(
+          "scheduledPostsContainer"
+        );
+
+        function showAlert(message, type) {
+          alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+          setTimeout(() => {
+            alertContainer.innerHTML = "";
+          }, 5000);
+        }
+
+        // Extract the share token from the URL
+        const pathSegments = window.location.pathname.split("/");
+        const shareToken = pathSegments[pathSegments.length - 1];
+
+        if (!shareToken) {
+          showAlert("Invalid share link. No token found.", "error");
+          pageTitle.textContent = "Invalid Link";
+          ownerUsername.textContent = "";
+          scheduledPostsContainer.innerHTML =
+            '<p class="no-posts">The share link is malformed or missing a token.</p>';
+          return;
+        }
+
+        showAlert("Loading shared calendar...", "info");
+
+        try {
+          // Fetch shared data from the backend
+          // Note: This hits the public /api/share/view/:token endpoint
+          const response = await fetch(`/api/share/view/${shareToken}`);
+          const data = await response.json();
+
+          if (response.ok) {
+            pageTitle.textContent = `Scheduled Posts for ${data.owner.username}`;
+            ownerUsername.textContent = data.owner.username;
+
+            if (data.scheduledPosts.length === 0) {
+              scheduledPostsContainer.innerHTML =
+                '<p class="no-posts">No scheduled posts available for this shared link.</p>';
+            } else {
+              scheduledPostsContainer.innerHTML = data.scheduledPosts
+                .map((post) => {
+                  const scheduledDate = new Date(post.scheduled_date);
+                  const formattedDate = scheduledDate.toLocaleDateString(
+                    "en-US",
+                    {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    }
+                  );
+                  const formattedTime = scheduledDate.toLocaleTimeString(
+                    "en-US",
+                    {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    }
+                  );
+
+                  return `
+                                <div class="post-item">
+                                    <h3>${post.topic}</h3>
+                                    <p><strong>Caption:</strong> ${
+                                      post.caption
+                                    }</p>
+                                    <p class="hashtags">#${post.hashtags.join(
+                                      " #"
+                                    )}</p>
+                                    <span class="date-time">Scheduled: ${formattedDate} at ${formattedTime}</span>
+                                    <p>Mood: <strong>${
+                                      post.mood
+                                    }</strong> | Persona: <strong>${
+                    post.persona
+                  }</strong></p>
+                                    ${
+                                      post.trending_topic
+                                        ? `<p>Trending Topic: <strong>${post.trending_topic}</strong></p>`
+                                        : ""
+                                    }
+                                </div>
+                            `;
+                })
+                .join("");
+            }
+            alertContainer.innerHTML = ""; // Clear info alert on success
+          } else {
+            showAlert(data.error || "Failed to load shared calendar.", "error");
+            pageTitle.textContent = "Error Loading Calendar";
+            ownerUsername.textContent = "";
+            scheduledPostsContainer.innerHTML = `<p class="no-posts">${
+              data.error || "Could not load shared content."
+            }</p>`;
+          }
+        } catch (error) {
+          console.error("Error fetching shared calendar:", error);
+          showAlert(
+            "Network error or server unreachable. Please try again later.",
+            "error"
+          );
+          pageTitle.textContent = "Network Error";
+          ownerUsername.textContent = "";
+          scheduledPostsContainer.innerHTML =
+            '<p class="no-posts">Failed to connect to the server.</p>';
+        }
+      });
+    </script>
+  </body>
+</html>

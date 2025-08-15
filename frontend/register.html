@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - MoodGram</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Additional styles for OTP section, adjust as needed */
+      .otp-input-group {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+      .otp-input-group input {
+        width: 150px; /* Adjust width for OTP input */
+        text-align: center;
+        font-size: 1.5em;
+        letter-spacing: 5px;
+      }
+      .resend-otp-btn {
+        background: none;
+        border: none;
+        color: var(--primary-color);
+        cursor: pointer;
+        font-size: 0.9em;
+        text-decoration: underline;
+        margin-top: 10px;
+      }
+      .resend-otp-btn:disabled {
+        color: var(--text-secondary);
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-content">
+        <a href="index.html" class="logo">MoodGram</a>
+        <nav class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="login.html">Sign In</a>
+        </nav>
+      </div>
+    </header>
+
+    <div class="form-container">
+      <h1>Create Account</h1>
+      <div id="alert-container"></div>
+
+      <!-- Registration Form -->
+      <form id="registerForm">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            required
+            minlength="3"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            minlength="6"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            required
+            minlength="6"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="btn btn-primary"
+          style="width: 100%; margin-bottom: 20px"
+        >
+          <span class="btn-text">Create Account</span>
+          <div class="loading hidden">
+            <div class="spinner"></div>
+            Creating account...
+          </div>
+        </button>
+      </form>
+
+      <!-- OTP Verification Section (Initially Hidden) -->
+      <div id="otpVerificationSection" class="hidden">
+        <h2>Verify Your Email</h2>
+        <p style="text-align: center; margin-bottom: 20px">
+          An OTP has been sent to <strong id="otpEmailDisplay"></strong>. Please
+          enter it below to verify your account.
+        </p>
+        <form id="otpVerifyForm">
+          <div class="form-group otp-input-group">
+            <label for="otpCode">OTP Code</label>
+            <input
+              type="text"
+              id="otpCode"
+              name="otpCode"
+              required
+              maxlength="6"
+              pattern="\d{6}"
+              title="Please enter a 6-digit OTP"
+            />
+          </div>
+          <button
+            type="submit"
+            class="btn btn-primary"
+            style="width: 100%; margin-bottom: 10px"
+          >
+            <span class="btn-text">Verify Account</span>
+            <div class="loading hidden">
+              <div class="spinner"></div>
+              Verifying...
+            </div>
+          </button>
+          <button type="button" id="resendOtpBtn" class="resend-otp-btn">
+            Resend OTP
+          </button>
+          <span
+            id="resendOtpTimer"
+            style="
+              font-size: 0.9em;
+              color: var(--text-secondary);
+              margin-left: 10px;
+            "
+          ></span>
+        </form>
+      </div>
+
+      <p style="text-align: center; color: var(--text-secondary)">
+        Already have an account?
+        <a
+          href="login.html"
+          style="color: var(--primary-color); text-decoration: none"
+          >Sign in here</a
+        >
+      </p>
+    </div>
+
+    <script>
+      const registerForm = document.getElementById("registerForm");
+      const otpVerificationSection = document.getElementById(
+        "otpVerificationSection"
+      );
+      const otpVerifyForm = document.getElementById("otpVerifyForm");
+      const otpEmailDisplay = document.getElementById("otpEmailDisplay");
+      const otpCodeInput = document.getElementById("otpCode");
+      const resendOtpBtn = document.getElementById("resendOtpBtn");
+      const resendOtpTimer = document.getElementById("resendOtpTimer");
+      const alertContainer = document.getElementById("alert-container");
+
+      let registeredEmail = ""; // To store email after registration for OTP verification
+      let resendTimerInterval;
+      let resendCountdown = 60; // 60 seconds for resend cooldown
+
+      function showAlert(message, type) {
+        alertContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+        setTimeout(() => {
+          alertContainer.innerHTML = "";
+        }, 5000);
+      }
+
+      function startResendTimer() {
+        resendCountdown = 60; // Reset timer
+        resendOtpBtn.disabled = true;
+        resendOtpTimer.textContent = `(${resendCountdown}s)`;
+
+        resendTimerInterval = setInterval(() => {
+          resendCountdown--;
+          resendOtpTimer.textContent = `(${resendCountdown}s)`;
+          if (resendCountdown <= 0) {
+            clearInterval(resendTimerInterval);
+            resendOtpBtn.disabled = false;
+            resendOtpTimer.textContent = "";
+          }
+        }, 1000);
+      }
+
+      // Handle initial registration form submission
+      registerForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const button = registerForm.querySelector('button[type="submit"]');
+        const btnText = button.querySelector(".btn-text");
+        const loading = button.querySelector(".loading");
+
+        const formData = new FormData(registerForm);
+        const data = {
+          username: formData.get("username"),
+          email: formData.get("email"),
+          password: formData.get("password"),
+          confirmPassword: formData.get("confirmPassword"),
+        };
+
+        // Validate passwords match
+        if (data.password !== data.confirmPassword) {
+          showAlert("Passwords do not match!", "error");
+          return;
+        }
+
+        // Show loading state
+        btnText.classList.add("hidden");
+        loading.classList.remove("hidden");
+        button.disabled = true;
+
+        try {
+          const response = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            registeredEmail = data.email; // Store email for OTP verification
+            otpEmailDisplay.textContent = registeredEmail; // Display email in OTP section
+
+            registerForm.classList.add("hidden"); // Hide registration form
+            otpVerificationSection.classList.remove("hidden"); // Show OTP section
+
+            showAlert(
+              result.message ||
+                "Account created! Please check your email for the OTP.",
+              "success"
+            );
+            startResendTimer(); // Start resend timer
+          } else {
+            showAlert(
+              result.error || "Registration failed. Please try again.",
+              "error"
+            );
+          }
+        } catch (error) {
+          console.error("Registration error:", error);
+          showAlert("Connection error. Please try again.", "error");
+        } finally {
+          // Reset button state
+          btnText.classList.remove("hidden");
+          loading.classList.add("hidden");
+          button.disabled = false;
+        }
+      });
+
+      // Handle OTP verification form submission
+      otpVerifyForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const button = otpVerifyForm.querySelector('button[type="submit"]');
+        const btnText = button.querySelector(".btn-text");
+        const loading = button.querySelector(".loading");
+
+        const otpCode = otpCodeInput.value.trim();
+
+        if (!otpCode || otpCode.length !== 6) {
+          showAlert("Please enter a valid 6-digit OTP.", "error");
+          return;
+        }
+
+        // Show loading state
+        btnText.classList.add("hidden");
+        loading.classList.remove("hidden");
+        button.disabled = true;
+
+        try {
+          const response = await fetch("/api/auth/verify-otp", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email: registeredEmail, otpCode: otpCode }),
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            showAlert(
+              result.message ||
+                "Email verified successfully! Redirecting to login...",
+              "success"
+            );
+            clearInterval(resendTimerInterval); // Stop resend timer on success
+            setTimeout(() => {
+              window.location.href = "login.html";
+            }, 2000);
+          } else {
+            showAlert(
+              result.error || "OTP verification failed. Please try again.",
+              "error"
+            );
+          }
+        } catch (error) {
+          console.error("OTP verification error:", error);
+          showAlert("Connection error. Please try again.", "error");
+        } finally {
+          // Reset button state
+          btnText.classList.remove("hidden");
+          loading.classList.add("hidden");
+          button.disabled = false;
+        }
+      });
+
+      // Handle Resend OTP button click
+      resendOtpBtn.addEventListener("click", async () => {
+        if (!registeredEmail) {
+          showAlert("Please register an account first to resend OTP.", "error");
+          return;
+        }
+
+        resendOtpBtn.disabled = true; // Disable immediately to prevent multiple clicks
+        showAlert("Resending OTP...", "info");
+
+        try {
+          const response = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email: registeredEmail,
+              username: "temp",
+              password: "temp",
+              confirmPassword: "temp",
+            }), // Send minimal data to trigger resend logic
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            showAlert(
+              result.message || "New OTP sent! Check your email.",
+              "success"
+            );
+            startResendTimer(); // Restart timer
+          } else {
+            showAlert(
+              result.error || "Failed to resend OTP. Please try again.",
+              "error"
+            );
+            resendOtpBtn.disabled = false; // Re-enable if resend failed
+          }
+        } catch (error) {
+          console.error("Resend OTP error:", error);
+          showAlert("Connection error. Please try again.", "error");
+          resendOtpBtn.disabled = false; // Re-enable if network error
+        }
+      });
+    </script>
+  </body>
+</html>
