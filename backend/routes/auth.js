@@ -63,10 +63,19 @@ router.post('/register', async (req, res) => {
         console.log('Auth Route: OTP set for user:', newUser.id);
 
         // Send OTP email
-        await emailService.sendOtpEmail(newUser.email, otpCode);
-        console.log(`Auth Route: OTP email sent to ${newUser.email}`);
+        // After generating & storing OTP:
+        try {
+            await emailService.sendOtpEmail(email, otpCode);
+        } catch (emailErr) {
+            console.error('Auth Route: Error sending OTP email:', emailErr);
+            if (process.env.DEV_EMAIL_MODE === 'console') {
+                console.warn('Auth Route: DEV EMAIL MODE enabled — proceeding without email delivery. OTP logged on server.');
+            } else {
+                throw emailErr;
+            }
+        }
 
-        res.status(201).json({
+        res.json({
             success: true,
             message: 'Registration successful! Please check your email for the OTP to verify your account.'
         });

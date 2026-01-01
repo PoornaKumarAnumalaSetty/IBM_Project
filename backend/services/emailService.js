@@ -1,4 +1,4 @@
-// backend/services/emailService.js
+// Class: EmailService
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
 
@@ -6,25 +6,60 @@ dotenv.config();
 
 class EmailService {
     constructor() {
-        if (!process.env.EMAIL_HOST || !process.env.EMAIL_PORT || !process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        const {
+            EMAIL_SERVICE,
+            EMAIL_HOST,
+            EMAIL_PORT,
+            EMAIL_USER,
+            EMAIL_PASS,
+            EMAIL_SECURE,
+            EMAIL_REQUIRE_TLS,
+            EMAIL_CONNECTION_TIMEOUT,
+            EMAIL_SOCKET_TIMEOUT,
+            DEV_EMAIL_MODE,
+        } = process.env;
+
+        this.isDevEmailMode = DEV_EMAIL_MODE === 'console';
+
+        if (!EMAIL_USER || !EMAIL_PASS) {
             console.warn('⚠️ Email credentials not fully provided in .env. Email sending will not work.');
             this.transporter = null;
-        } else {
+        } else if (process.env.EMAIL_SERVICE === 'gmail') {
             this.transporter = nodemailer.createTransport({
-                host: process.env.EMAIL_HOST,
-                port: process.env.EMAIL_PORT,
-                secure: process.env.EMAIL_PORT == 465, // true for 465 (SSL), false for other ports (TLS)
+                service: 'gmail',
                 auth: {
                     user: process.env.EMAIL_USER,
                     pass: process.env.EMAIL_PASS,
                 },
+                pool: true,
+                connectionTimeout: Number(process.env.EMAIL_CONNECTION_TIMEOUT || 10000),
+                socketTimeout: Number(process.env.EMAIL_SOCKET_TIMEOUT || 10000),
             });
+        } else if (EMAIL_HOST && EMAIL_PORT) {
+            // Generic SMTP with proper TLS settings
+            const portNum = Number(EMAIL_PORT);
+            this.transporter = nodemailer.createTransport({
+                host: EMAIL_HOST,
+                port: portNum,
+                secure: (EMAIL_SECURE === 'true') || portNum === 465, // SSL on 465
+                requireTLS: (EMAIL_REQUIRE_TLS === 'true') || portNum === 587,  // STARTTLS on 587
+                auth: {
+                    user: EMAIL_USER,
+                    pass: EMAIL_PASS,
+                },
+                pool: true,
+                connectionTimeout: Number(EMAIL_CONNECTION_TIMEOUT || 10000),
+                socketTimeout: Number(EMAIL_SOCKET_TIMEOUT || 10000),
+            });
+        } else {
+            console.warn('⚠️ Email host/port not provided. Email sending will not work.');
+            this.transporter = null;
+        }
 
-            // Verify connection configuration
+        if (this.transporter) {
             this.transporter.verify((error) => {
                 if (error) {
                     console.error('❌ Nodemailer transporter verification failed:', error);
-                    // You might want to throw an error here or set a flag to prevent email sending attempts
                 } else {
                     console.log('✅ Nodemailer transporter ready to send emails');
                 }
@@ -32,19 +67,19 @@ class EmailService {
         }
     }
 
-    /**
-     * Sends an OTP (One-Time Password) email to the specified address.
-     * @param {string} toEmail - The recipient's email address.
-     * @param {string} otpCode - The 6-digit OTP code to send.
-     */
     async sendOtpEmail(toEmail, otpCode) {
         if (!this.transporter) {
+            if (this.isDevEmailMode) {
+                console.warn('DEV EMAIL MODE: Transporter not available. Logging OTP instead.');
+                console.log(`DEV OTP -> ${toEmail}: ${otpCode}`);
+                return { messageId: 'dev-console', accepted: [toEmail] };
+            }
             console.error('Email service not initialized. Cannot send OTP email.');
             throw new Error('Email service not available. Please check server configuration.');
         }
 
         const mailOptions = {
-            from: process.env.EMAIL_USER, // Sender address, should match EMAIL_USER
+            from: process.env.EMAIL_USER,
             to: toEmail,
             subject: 'Your MoodGram Verification Code (OTP)',
             html: `
@@ -64,6 +99,17 @@ class EmailService {
             return info;
         } catch (error) {
             console.error(`❌ Error sending OTP email to ${toEmail}:`, error);
+
+            // Helpful message for common timeout case
+            if (error && (error.code === 'ESOCKET' || error.code === 'ETIMEDOUT' || error.syscall === 'connect')) {
+                console.error('SMTP connection timed out. If using Gmail, set EMAIL_SERVICE=gmail and use an App Password. On networks that block SMTP, use dev fallback.');
+            }
+
+            if (this.isDevEmailMode) {
+                console.warn('DEV EMAIL MODE: Email send failed, but proceeding. OTP is logged above.');
+                return { messageId: 'dev-fallback', accepted: [toEmail] };
+            }
+
             throw new Error(`Failed to send OTP email: ${error.message}`);
         }
     }

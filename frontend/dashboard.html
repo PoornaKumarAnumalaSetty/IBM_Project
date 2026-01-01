@@ -699,6 +699,105 @@
               Copy All
             </button>
           </div>
+          <div class="feedback-section" id="feedbackSection">
+            <div class="feedback-header">
+              <h3>Help Tune Your Voice</h3>
+              <p>Share quick feedback so future captions match your vibe.</p>
+            </div>
+            <form id="captionFeedbackForm">
+              <div class="feedback-type-group">
+                <label class="feedback-type-option">
+                  <input type="radio" name="feedbackType" value="positive" checked />
+                  <span>Love it</span>
+                </label>
+                <label class="feedback-type-option">
+                  <input type="radio" name="feedbackType" value="neutral" />
+                  <span>It's OK</span>
+                </label>
+                <label class="feedback-type-option">
+                  <input type="radio" name="feedbackType" value="negative" />
+                  <span>Needs work</span>
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label for="feedbackComment">What should we tweak?</label>
+                <textarea
+                  id="feedbackComment"
+                  rows="3"
+                  placeholder="Optional: add context or phrases you liked/disliked"
+                ></textarea>
+              </div>
+
+              <div class="feedback-slider-grid">
+                <div class="feedback-slider">
+                  <label for="expectedFormality">
+                    Formality
+                    <span class="slider-value" data-slider-target="expectedFormality">0.5</span>
+                  </label>
+                  <input type="range" min="0" max="1" step="0.1" value="0.5" id="expectedFormality" data-feedback-slider data-default-value="0.5" />
+                </div>
+                <div class="feedback-slider">
+                  <label for="expectedHumor">
+                    Humor
+                    <span class="slider-value" data-slider-target="expectedHumor">0.5</span>
+                  </label>
+                  <input type="range" min="0" max="1" step="0.1" value="0.5" id="expectedHumor" data-feedback-slider data-default-value="0.5" />
+                </div>
+                <div class="feedback-slider">
+                  <label for="expectedEnthusiasm">
+                    Enthusiasm
+                    <span class="slider-value" data-slider-target="expectedEnthusiasm">0.5</span>
+                  </label>
+                  <input type="range" min="0" max="1" step="0.1" value="0.5" id="expectedEnthusiasm" data-feedback-slider data-default-value="0.5" />
+                </div>
+                <div class="feedback-slider">
+                  <label for="expectedProfessionalism">
+                    Professionalism
+                    <span class="slider-value" data-slider-target="expectedProfessionalism">0.5</span>
+                  </label>
+                  <input type="range" min="0" max="1" step="0.1" value="0.5" id="expectedProfessionalism" data-feedback-slider data-default-value="0.5" />
+                </div>
+                <div class="feedback-slider">
+                  <label for="expectedCreativity">
+                    Creativity
+                    <span class="slider-value" data-slider-target="expectedCreativity">0.5</span>
+                  </label>
+                  <input type="range" min="0" max="1" step="0.1" value="0.5" id="expectedCreativity" data-feedback-slider data-default-value="0.5" />
+                </div>
+                <div class="feedback-slider">
+                  <label for="expectedEmotionalTone">
+                    Emotional Tone
+                    <span class="slider-value" data-slider-target="expectedEmotionalTone">0.5</span>
+                  </label>
+                  <input type="range" min="0" max="1" step="0.1" value="0.5" id="expectedEmotionalTone" data-feedback-slider data-default-value="0.5" />
+                </div>
+                <div class="feedback-slider">
+                  <label for="expectedConfidence">
+                    Confidence
+                    <span class="slider-value" data-slider-target="expectedConfidence">0.5</span>
+                  </label>
+                  <input type="range" min="0" max="1" step="0.1" value="0.5" id="expectedConfidence" data-feedback-slider data-default-value="0.5" />
+                </div>
+                <div class="feedback-slider">
+                  <label for="expectedWarmth">
+                    Warmth
+                    <span class="slider-value" data-slider-target="expectedWarmth">0.5</span>
+                  </label>
+                  <input type="range" min="0" max="1" step="0.1" value="0.5" id="expectedWarmth" data-feedback-slider data-default-value="0.5" />
+                </div>
+              </div>
+
+              <button type="submit" class="btn btn-primary" id="submitFeedbackBtn">
+                <span class="btn-text">Send Feedback</span>
+                <div class="loading hidden">
+                  <div class="spinner"></div>
+                  Sending...
+                </div>
+              </button>
+            </form>
+            <div id="feedbackStatus" class="feedback-status"></div>
+          </div>
         </div>
 
         <div class="dashboard-grid">
@@ -800,7 +899,8 @@
         mood: "",
         persona: "",
         language: "English",
-        hashtags: [] // Initialize with an empty array
+        hashtags: [], // Initialize with an empty array
+        generatedContentId: null
       };
       let lastRewrittenSuggestions = null;
       let uploadedImageFile = null;
@@ -920,6 +1020,13 @@
       const ctaSuggestionsLoading = document.getElementById("ctaSuggestionsLoading");
       const ctaSuggestionsResults = document.getElementById("ctaSuggestionsResults");
 
+      // NEW: Feedback Elements
+      const captionFeedbackForm = document.getElementById("captionFeedbackForm");
+      const feedbackCommentInput = document.getElementById("feedbackComment");
+      const feedbackStatusContainer = document.getElementById("feedbackStatus");
+      const submitFeedbackBtn = document.getElementById("submitFeedbackBtn");
+      const feedbackSliderInputs = document.querySelectorAll("[data-feedback-slider]");
+
 
       // Stores the AI's structured emoji suggestions received from backend
       let aiEmojiSuggestionsData = [];
@@ -941,6 +1048,122 @@
           console.warn("Alert container not found. Message:", message);
         }
       }
+
+      function setFeedbackStatus(message = "", type = "info") {
+        if (!feedbackStatusContainer) return;
+        if (!message) {
+          feedbackStatusContainer.innerHTML = "";
+          return;
+        }
+        feedbackStatusContainer.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+      }
+
+      function toggleFeedbackButtonLoading(isLoading) {
+        if (!submitFeedbackBtn) return;
+        const loadingEl = submitFeedbackBtn.querySelector(".loading");
+        const textEl = submitFeedbackBtn.querySelector(".btn-text");
+        submitFeedbackBtn.disabled = isLoading;
+        if (loadingEl) loadingEl.classList.toggle("hidden", !isLoading);
+        if (textEl) textEl.classList.toggle("hidden", isLoading);
+      }
+
+      function updateSliderValueDisplay(slider) {
+        if (!slider) return;
+        const target = document.querySelector(
+          `[data-slider-target="${slider.id}"]`
+        );
+        if (target) {
+          target.textContent = Number(slider.value).toFixed(1);
+        }
+      }
+
+      function resetFeedbackForm() {
+        if (!captionFeedbackForm) return;
+        captionFeedbackForm.reset();
+        feedbackSliderInputs.forEach((slider) => {
+          if (slider.dataset.defaultValue) {
+            slider.value = slider.dataset.defaultValue;
+          }
+          updateSliderValueDisplay(slider);
+        });
+        setFeedbackStatus("");
+      }
+
+      async function submitCaptionFeedback(event) {
+        event.preventDefault();
+        if (!lastGeneratedContent || !lastGeneratedContent.caption) {
+          setFeedbackStatus("Generate a caption before sending feedback.", "error");
+          return;
+        }
+
+        const selectedType = captionFeedbackForm.querySelector(
+          'input[name="feedbackType"]:checked'
+        );
+        if (!selectedType) {
+          setFeedbackStatus("Select how this caption felt.", "error");
+          return;
+        }
+
+        const sliderValues = {};
+        feedbackSliderInputs.forEach((slider) => {
+          sliderValues[slider.id] = parseFloat(slider.value);
+        });
+
+        const payload = {
+          generatedContentId: lastGeneratedContent.generatedContentId || null,
+          contentType: "caption",
+          feedbackType: selectedType.value,
+          feedbackComment: feedbackCommentInput
+            ? feedbackCommentInput.value.trim()
+            : null,
+          expectedFormality: sliderValues.expectedFormality,
+          expectedHumor: sliderValues.expectedHumor,
+          expectedEnthusiasm: sliderValues.expectedEnthusiasm,
+          expectedProfessionalism: sliderValues.expectedProfessionalism,
+          expectedCreativity: sliderValues.expectedCreativity,
+          expectedEmotionalTone: sliderValues.expectedEmotionalTone,
+          expectedConfidence: sliderValues.expectedConfidence,
+          expectedWarmth: sliderValues.expectedWarmth,
+        };
+
+        toggleFeedbackButtonLoading(true);
+        setFeedbackStatus("Sending feedback...", "info");
+
+        try {
+          const response = await fetch("/api/generate/voice-feedback", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(payload),
+          });
+
+          const data = await response.json();
+          if (!response.ok) {
+            throw new Error(data.error || "Unable to save feedback.");
+          }
+
+          resetFeedbackForm();
+          setFeedbackStatus("Thanks! We’ll adapt the next caption.", "success");
+        } catch (error) {
+          console.error("submitCaptionFeedback error:", error);
+          setFeedbackStatus(error.message || "Failed to send feedback.", "error");
+        } finally {
+          toggleFeedbackButtonLoading(false);
+        }
+      }
+
+      if (feedbackSliderInputs && feedbackSliderInputs.length > 0) {
+        feedbackSliderInputs.forEach((slider) => {
+          updateSliderValueDisplay(slider);
+          slider.addEventListener("input", () => updateSliderValueDisplay(slider));
+        });
+      }
+
+      if (captionFeedbackForm) {
+        captionFeedbackForm.addEventListener("submit", submitCaptionFeedback);
+      }
+
+      resetFeedbackForm();
 
       async function logout() {
         console.log("logout: Initiated.");
@@ -985,7 +1208,8 @@
           trendingTopic: content.metadata.trendingTopic || "", // Include for consistency
           // NEW: Store brandVoice and targetAudience from metadata
           brandVoice: content.metadata.brandVoice || "",
-          targetAudience: content.metadata.targetAudience || ""
+          targetAudience: content.metadata.targetAudience || "",
+          generatedContentId: content.metadata.generatedContentId || null
         };
         // Update the preview textarea in the Text Input tab
         if (generatedCaptionDisplay) {
@@ -997,6 +1221,11 @@
           // Defensive check
           document.getElementById("resultContainer").classList.remove("hidden");
         }
+        resetFeedbackForm();
+        setFeedbackStatus(
+          "How did this caption feel? Share quick feedback to keep training!",
+          "info"
+        );
         if (rewrittenSuggestionsContainer) {
           // Defensive check
           rewrittenSuggestionsContainer.classList.add("hidden");

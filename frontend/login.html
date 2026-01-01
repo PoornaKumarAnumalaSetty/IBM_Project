@@ -88,6 +88,7 @@
               "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
+            credentials: "include", // IMPORTANT: store session cookie from login
           });
 
           const result = await response.json();

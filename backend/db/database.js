@@ -111,30 +111,102 @@ async function initializeDatabase() {
             )
         `);
 
-        // Indexes (unchanged existing, adding new ones)
+        // ========== ADVANCED BRAND VOICE ENGINE TABLES ==========
+        
+        // Voice Profiles table - stores multidimensional voice vectors
         await client.query(`
-            CREATE INDEX IF NOT EXISTS idx_saved_posts_user_id ON saved_posts(user_id);
-        `);
-        await client.query(`
-            CREATE INDEX IF NOT EXISTS idx_calendar_events_user_id ON calendar_events(user_id);
-        `);
-        await client.query(`
-            CREATE INDEX IF NOT EXISTS idx_calendar_events_scheduled_date ON calendar_events(scheduled_date);
-        `);
-        await client.query(`
-            CREATE UNIQUE INDEX IF NOT EXISTS idx_share_links_token ON share_links(share_token);
-        `);
-        await client.query(`
-            CREATE INDEX IF NOT EXISTS idx_share_links_user_id ON share_links(user_id);
-        `);
-        // NEW INDEXES for rewritten_sets and rewritten_suggestions
-        await client.query(`
-            CREATE INDEX IF NOT EXISTS idx_rewritten_sets_user_id ON rewritten_sets(user_id);
-        `);
-        await client.query(`
-            CREATE INDEX IF NOT EXISTS idx_rewritten_suggestions_set_id ON rewritten_suggestions(rewritten_set_id);
+            CREATE TABLE IF NOT EXISTS voice_profiles (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER REFERENCES users(id) ON DELETE CASCADE UNIQUE,
+                profile_name VARCHAR(100) NOT NULL DEFAULT 'Default Profile',
+                formality DECIMAL(3,2) DEFAULT 0.5,        -- 0=casual, 1=formal
+                humor DECIMAL(3,2) DEFAULT 0.5,            -- 0=serious, 1=humorous
+                enthusiasm DECIMAL(3,2) DEFAULT 0.5,       -- 0=neutral, 1=enthusiastic
+                professionalism DECIMAL(3,2) DEFAULT 0.5,  -- 0=personal, 1=professional
+                creativity DECIMAL(3,2) DEFAULT 0.5,       -- 0=straightforward, 1=creative
+                emotional_tone DECIMAL(3,2) DEFAULT 0.5,   -- 0=rational, 1=emotional
+                confidence DECIMAL(3,2) DEFAULT 0.5,       -- 0=tentative, 1=confident
+                warmth DECIMAL(3,2) DEFAULT 0.5,           -- 0=cold, 1=warm
+                is_active BOOLEAN DEFAULT TRUE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
         `);
 
+        // Content Analysis table - stores ML analysis of user content for training
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS content_analysis (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+                content_type VARCHAR(50) NOT NULL, -- 'caption', 'hashtag', 'rewritten_caption'
+                content_id INTEGER, -- Reference to saved_posts.id or rewritten_sets.id
+                content_text TEXT NOT NULL,
+                analyzed_formality DECIMAL(3,2),
+                analyzed_humor DECIMAL(3,2),
+                analyzed_enthusiasm DECIMAL(3,2),
+                analyzed_professionalism DECIMAL(3,2),
+                analyzed_creativity DECIMAL(3,2),
+                analyzed_emotional_tone DECIMAL(3,2),
+                analyzed_confidence DECIMAL(3,2),
+                analyzed_warmth DECIMAL(3,2),
+                analysis_confidence DECIMAL(3,2) DEFAULT 0.0,
+                analyzed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+
+        // Voice Feedback table - stores user feedback for learning system
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS voice_feedback (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+                generated_content_id INTEGER, -- Reference to the content that was generated
+                content_type VARCHAR(50) NOT NULL, -- 'caption', 'hashtag', 'rewritten_caption'
+                feedback_type VARCHAR(20) NOT NULL, -- 'positive', 'negative', 'neutral'
+                feedback_comment TEXT,
+                expected_formality DECIMAL(3,2),
+                expected_humor DECIMAL(3,2),
+                expected_enthusiasm DECIMAL(3,2),
+                expected_professionalism DECIMAL(3,2),
+                expected_creativity DECIMAL(3,2),
+                expected_emotional_tone DECIMAL(3,2),
+                expected_confidence DECIMAL(3,2),
+                expected_warmth DECIMAL(3,2),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+
+        // Voice Training Sessions table - tracks ML training progress
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS voice_training_sessions (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+                training_type VARCHAR(50) NOT NULL, -- 'initial', 'refinement', 'feedback_based'
+                samples_used INTEGER DEFAULT 0,
+                accuracy_score DECIMAL(4,3) DEFAULT 0.0, -- 0-1 scale
+                training_duration INTEGER, -- in seconds
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+
+        // ========== INDEXES ==========
+        
+        // Existing indexes
+        await client.query(`CREATE INDEX IF NOT EXISTS idx_saved_posts_user_id ON saved_posts(user_id);`);
+        await client.query(`CREATE INDEX IF NOT EXISTS idx_calendar_events_user_id ON calendar_events(user_id);`);
+        await client.query(`CREATE INDEX IF NOT EXISTS idx_calendar_events_scheduled_date ON calendar_events(scheduled_date);`);
+        await client.query(`CREATE UNIQUE INDEX IF NOT EXISTS idx_share_links_token ON share_links(share_token);`);
+        await client.query(`CREATE INDEX IF NOT EXISTS idx_share_links_user_id ON share_links(user_id);`);
+        await client.query(`CREATE INDEX IF NOT EXISTS idx_rewritten_sets_user_id ON rewritten_sets(user_id);`);
+        await client.query(`CREATE INDEX IF NOT EXISTS idx_rewritten_suggestions_set_id ON rewritten_suggestions(rewritten_set_id);`);
+
+        // New indexes for Advanced Brand Voice Engine
+        await client.query(`CREATE INDEX IF NOT EXISTS idx_voice_profiles_user_id ON voice_profiles(user_id);`);
+        await client.query(`CREATE INDEX IF NOT EXISTS idx_voice_profiles_active ON voice_profiles(user_id) WHERE is_active = TRUE;`);
+        await client.query(`CREATE INDEX IF NOT EXISTS idx_content_analysis_user_id ON content_analysis(user_id);`);
+        await client.query(`CREATE INDEX IF NOT EXISTS idx_content_analysis_type ON content_analysis(content_type);`);
+        await client.query(`CREATE INDEX IF NOT EXISTS idx_voice_feedback_user_id ON voice_feedback(user_id);`);
+        await client.query(`CREATE INDEX IF NOT EXISTS idx_voice_feedback_type ON voice_feedback(feedback_type);`);
+        await client.query(`CREATE INDEX IF NOT EXISTS idx_voice_training_user_id ON voice_training_sessions(user_id);`);
 
         console.log('✅ Database tables initialized successfully');
     } catch (error) {
@@ -229,7 +301,6 @@ class Database {
         const result = await pool.query(query, values);
         return result.rows[0];
     }
-
 
     // UPDATED: savePost to include 'language'
     async savePost(userId, postData) {
@@ -346,7 +417,6 @@ class Database {
         const result = await pool.query(query, [setId, userId]);
         return result.rows[0]; // Returns the deleted row if successful, undefined otherwise
     }
-
 
     // UPDATED: getSavedPosts to include 'language' in SELECT
     async getSavedPosts(userId, limit = null) {
@@ -504,6 +574,202 @@ class Database {
             UPDATE share_links SET is_active = FALSE WHERE id = $1 AND user_id = $2 RETURNING *;
         `;
         const result = await pool.query(query, [shareLinkId, userId]);
+        return result.rows[0];
+    }
+
+    // ========== ADVANCED BRAND VOICE ENGINE METHODS ==========
+
+    /**
+     * Creates or updates a voice profile for a user
+     * @param {number} userId - The user ID
+     * @param {object} voiceData - Voice vector data
+     * @returns {Promise<object>} The created/updated voice profile
+     */
+    async upsertVoiceProfile(userId, voiceData) {
+        const query = `
+            INSERT INTO voice_profiles (
+                user_id, profile_name, formality, humor, enthusiasm, 
+                professionalism, creativity, emotional_tone, confidence, warmth
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            ON CONFLICT (user_id) 
+            DO UPDATE SET 
+                profile_name = EXCLUDED.profile_name,
+                formality = EXCLUDED.formality,
+                humor = EXCLUDED.humor,
+                enthusiasm = EXCLUDED.enthusiasm,
+                professionalism = EXCLUDED.professionalism,
+                creativity = EXCLUDED.creativity,
+                emotional_tone = EXCLUDED.emotional_tone,
+                confidence = EXCLUDED.confidence,
+                warmth = EXCLUDED.warmth,
+                updated_at = CURRENT_TIMESTAMP
+            RETURNING *
+        `;
+        
+        const values = [
+            userId,
+            voiceData.profileName || 'Default Profile',
+            voiceData.formality || 0.5,
+            voiceData.humor || 0.5,
+            voiceData.enthusiasm || 0.5,
+            voiceData.professionalism || 0.5,
+            voiceData.creativity || 0.5,
+            voiceData.emotionalTone || 0.5,
+            voiceData.confidence || 0.5,
+            voiceData.warmth || 0.5
+        ];
+
+        const result = await pool.query(query, values);
+        return result.rows[0];
+    }
+
+    /**
+     * Gets the active voice profile for a user
+     * @param {number} userId - The user ID
+     * @returns {Promise<object>} The active voice profile
+     */
+    async getVoiceProfile(userId) {
+        const query = `
+            SELECT * FROM voice_profiles 
+            WHERE user_id = $1 AND is_active = TRUE
+            ORDER BY updated_at DESC 
+            LIMIT 1
+        `;
+        const result = await pool.query(query, [userId]);
+        return result.rows[0];
+    }
+
+    /**
+     * Stores content analysis results for ML training
+     * @param {number} userId - The user ID
+     * @param {object} analysisData - Analysis results
+     * @returns {Promise<object>} The stored analysis record
+     */
+    async storeContentAnalysis(userId, analysisData) {
+        const query = `
+            INSERT INTO content_analysis (
+                user_id, content_type, content_id, content_text,
+                analyzed_formality, analyzed_humor, analyzed_enthusiasm,
+                analyzed_professionalism, analyzed_creativity, analyzed_emotional_tone,
+                analyzed_confidence, analyzed_warmth, analysis_confidence
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+            RETURNING *
+        `;
+        
+        const values = [
+            userId,
+            analysisData.contentType,
+            analysisData.contentId || null,
+            analysisData.contentText,
+            analysisData.formality,
+            analysisData.humor,
+            analysisData.enthusiasm,
+            analysisData.professionalism,
+            analysisData.creativity,
+            analysisData.emotionalTone,
+            analysisData.confidence,
+            analysisData.warmth,
+            analysisData.confidence || 0.0
+        ];
+
+        const result = await pool.query(query, values);
+        return result.rows[0];
+    }
+
+    /**
+     * Stores user feedback for voice profile learning
+     * @param {number} userId - The user ID
+     * @param {object} feedbackData - Feedback data
+     * @returns {Promise<object>} The stored feedback record
+     */
+    async storeVoiceFeedback(userId, feedbackData) {
+        const query = `
+            INSERT INTO voice_feedback (
+                user_id, generated_content_id, content_type, feedback_type,
+                feedback_comment, expected_formality, expected_humor,
+                expected_enthusiasm, expected_professionalism, expected_creativity,
+                expected_emotional_tone, expected_confidence, expected_warmth
+            ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+            RETURNING *
+        `;
+        
+        const values = [
+            userId,
+            feedbackData.generatedContentId || null,
+            feedbackData.contentType,
+            feedbackData.feedbackType,
+            feedbackData.feedbackComment || null,
+            feedbackData.expectedFormality || null,
+            feedbackData.expectedHumor || null,
+            feedbackData.expectedEnthusiasm || null,
+            feedbackData.expectedProfessionalism || null,
+            feedbackData.expectedCreativity || null,
+            feedbackData.expectedEmotionalTone || null,
+            feedbackData.expectedConfidence || null,
+            feedbackData.expectedWarmth || null
+        ];
+
+        const result = await pool.query(query, values);
+        return result.rows[0];
+    }
+
+    /**
+     * Gets content analysis history for a user (for ML training)
+     * @param {number} userId - The user ID
+     * @param {number} limit - Number of records to return
+     * @returns {Promise<Array>} Array of analysis records
+     */
+    async getContentAnalysisHistory(userId, limit = 100) {
+        const query = `
+            SELECT * FROM content_analysis 
+            WHERE user_id = $1 
+            ORDER BY analyzed_at DESC 
+            LIMIT $2
+        `;
+        const result = await pool.query(query, [userId, limit]);
+        return result.rows;
+    }
+
+    /**
+     * Gets voice feedback history for a user
+     * @param {number} userId - The user ID
+     * @param {number} limit - Number of records to return
+     * @returns {Promise<Array>} Array of feedback records
+     */
+    async getVoiceFeedbackHistory(userId, limit = 50) {
+        const query = `
+            SELECT * FROM voice_feedback 
+            WHERE user_id = $1 
+            ORDER BY created_at DESC 
+            LIMIT $2
+        `;
+        const result = await pool.query(query, [userId, limit]);
+        return result.rows;
+    }
+
+    /**
+     * Records a voice training session
+     * @param {number} userId - The user ID
+     * @param {object} trainingData - Training session data
+     * @returns {Promise<object>} The recorded training session
+     */
+    async recordTrainingSession(userId, trainingData) {
+        const query = `
+            INSERT INTO voice_training_sessions (
+                user_id, training_type, samples_used, accuracy_score, training_duration
+            ) VALUES ($1, $2, $3, $4, $5)
+            RETURNING *
+        `;
+        
+        const values = [
+            userId,
+            trainingData.trainingType,
+            trainingData.samplesUsed || 0,
+            trainingData.accuracyScore || 0.0,
+            trainingData.trainingDuration || 0
+        ];
+
+        const result = await pool.query(query, values);
         return result.rows[0];
     }
 
